@@ -276,9 +276,7 @@ class RiskComparison:
     def branch_score_table(self) -> dict[str, float]:
         """Return branch ids mapped to aggregate risk score."""
 
-        return {
-            profile.branch_id: profile.aggregate_score for profile in self.ranked_profiles()
-        }
+        return {profile.branch_id: profile.aggregate_score for profile in self.ranked_profiles()}
 
     def canonical_payload(self) -> dict[str, Any]:
         """Return a deterministic payload for hashing and receipts."""
@@ -590,7 +588,7 @@ def _aggregate_factor_score(factors: tuple[RiskFactor, ...]) -> float:
     normalized_factors = _normalize_risk_factors(factors)
     total_weight = sum(factor.weight for factor in normalized_factors)
     weighted_sum = sum(factor.weighted_contribution for factor in normalized_factors)
-    return min(1.0, weighted_sum / total_weight)
+    return round(min(1.0, weighted_sum / total_weight), 12)
 
 
 def _normalize_observed_risk_value(value: float) -> float:
