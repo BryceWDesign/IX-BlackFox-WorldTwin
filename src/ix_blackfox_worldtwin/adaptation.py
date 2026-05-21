@@ -103,7 +103,11 @@ class AdaptationCandidate:
             "created_at",
             _require_aware_utc_datetime(self.created_at, "candidate created_at"),
         )
-        object.__setattr__(self, "proposed_by", _require_non_empty(self.proposed_by, "proposed by"))
+        object.__setattr__(
+            self,
+            "proposed_by",
+            _require_non_empty(self.proposed_by, "proposed by"),
+        )
         object.__setattr__(
             self,
             "evidence_ids",
@@ -212,7 +216,11 @@ class AdaptationGateResult:
             "created_at",
             _require_aware_utc_datetime(self.created_at, "gate result created_at"),
         )
-        object.__setattr__(self, "evaluated_by", _require_non_empty(self.evaluated_by, "evaluated by"))
+        object.__setattr__(
+            self,
+            "evaluated_by",
+            _require_non_empty(self.evaluated_by, "evaluated by"),
+        )
         object.__setattr__(self, "reasons", _normalize_gate_reasons(self.reasons))
         object.__setattr__(
             self,
@@ -397,7 +405,9 @@ def evaluate_adaptation_gate(
         evaluated_by=normalized_evaluated_by,
         reasons=normalized_reasons,
         confidence_profile_id=confidence_profile.profile_id,
-        reality_delta_report_id="" if reality_delta_report is None else reality_delta_report.report_id,
+        reality_delta_report_id=""
+        if reality_delta_report is None
+        else reality_delta_report.report_id,
         receipt_chain_validation_status=(
             "" if receipt_chain_validation is None else receipt_chain_validation.status.value
         ),
@@ -415,7 +425,9 @@ def evaluate_adaptation_gate(
         evaluated_by=normalized_evaluated_by,
         reasons=normalized_reasons,
         confidence_profile_id=confidence_profile.profile_id,
-        reality_delta_report_id="" if reality_delta_report is None else reality_delta_report.report_id,
+        reality_delta_report_id=""
+        if reality_delta_report is None
+        else reality_delta_report.report_id,
         receipt_chain_validation_status=(
             "" if receipt_chain_validation is None else receipt_chain_validation.status.value
         ),
@@ -508,9 +520,7 @@ def make_adaptation_gate_result_id(
         "model_id": _require_non_empty(model_id, "model id"),
         "policy_evaluation_id": policy_evaluation_id.strip(),
         "reality_delta_report_id": reality_delta_report_id.strip(),
-        "reasons": [
-            reason.canonical_payload() for reason in _normalize_gate_reasons(reasons)
-        ],
+        "reasons": [reason.canonical_payload() for reason in _normalize_gate_reasons(reasons)],
         "receipt_chain_validation_status": receipt_chain_validation_status.strip(),
         "requires_human_authority": True,
         "schema_version": ADAPTATION_SCHEMA_VERSION,
@@ -608,7 +618,9 @@ def _receipt_chain_reasons(
         AdaptationGateReason(
             code="receipt-chain-invalid",
             severity=AdaptationReasonSeverity.ERROR,
-            message="Receipt chain validation failed and must be repaired before adaptation review.",
+            message=(
+                "Receipt chain validation failed and must be repaired before adaptation review."
+            ),
             source=f"receipt-chain:{validation.chain_id}",
         ),
     )
