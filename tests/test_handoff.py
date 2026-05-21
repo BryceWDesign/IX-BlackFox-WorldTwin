@@ -6,7 +6,6 @@ import pytest
 
 import ix_blackfox_worldtwin as worldtwin
 
-
 MODEL_ID = "deterministic-kernel-v1"
 
 
@@ -18,7 +17,8 @@ def _scenario() -> worldtwin.ScenarioManifest:
     return worldtwin.build_thermal_drift_scenario()
 
 
-def _simulation() -> worldtwin.SimulationResult:
+def _simulation(created_at: datetime | None = None) -> worldtwin.SimulationResult:
+    resolved_created_at = _created_at() if created_at is None else created_at
     return worldtwin.run_deterministic_simulation(
         scenario=_scenario(),
         rules=(
@@ -44,23 +44,24 @@ def _simulation() -> worldtwin.SimulationResult:
         config=worldtwin.SimulationConfig(
             step_count=5,
             step_seconds=60,
-            created_at=_created_at(),
+            created_at=resolved_created_at,
         ),
     )
 
 
-def _prediction() -> worldtwin.PredictionResult:
-    simulation = _simulation()
+def _prediction(created_at: datetime | None = None) -> worldtwin.PredictionResult:
+    resolved_created_at = _created_at() if created_at is None else created_at
+    simulation = _simulation(created_at=resolved_created_at)
     confidence = worldtwin.create_confidence_assessment(
         target_id=simulation.simulation_id,
         confidence=0.90,
         rationale="Simulation is deterministic and scenario-bounded.",
-        created_at=_created_at(),
+        created_at=resolved_created_at,
         assessor="worldtwin-confidence-gate",
     )
     return worldtwin.create_prediction_result(
         simulation=simulation,
-        created_at=_created_at(),
+        created_at=resolved_created_at,
         created_by="worldtwin-prediction-gate",
         confidence_assessment=confidence,
     )
@@ -365,11 +366,13 @@ def test_handoff_package_quarantines_on_reality_delta_quarantine() -> None:
 
 def test_handoff_package_rejects_receipt_prediction_mismatch() -> None:
     prediction = _prediction()
-    other_prediction = _prediction()
+    other_prediction = _prediction(created_at=_created_at() + timedelta(minutes=1))
     receipt = _receipt(other_prediction)
     chain, validation = _chain_and_validation(receipt)
 
-    with pytest.raises(ValueError, match="receipt prediction_id must match prediction prediction_id"):
+    with pytest.raises(
+        ValueError, match="receipt prediction_id must match prediction prediction_id"
+    ):
         worldtwin.create_handoff_package(
             target=worldtwin.HandoffTarget.BLACKFOX_EXECUTION_GOVERNANCE,
             prediction=prediction,
@@ -385,7 +388,8 @@ def test_handoff_package_rejects_receipt_prediction_mismatch() -> None:
 def test_handoff_package_rejects_missing_receipt_in_chain() -> None:
     prediction = _prediction()
     receipt = _receipt(prediction)
-    other_receipt = _receipt(_prediction())
+    other_prediction = _prediction(created_at=_created_at() + timedelta(minutes=1))
+    other_receipt = _receipt(other_prediction)
     chain, validation = _chain_and_validation(other_receipt)
 
     with pytest.raises(ValueError, match="receipt chain must contain the handoff receipt"):
