@@ -79,6 +79,7 @@ from ix_blackfox_worldtwin.doctrine import (
     ClaimBoundaryRule,
     ClaimBoundaryViolation,
     SystemRole,
+    TriadRole,
     find_claim_boundary_violations,
     get_claim_boundary_rules,
     get_triad_roles,
@@ -119,6 +120,7 @@ from ix_blackfox_worldtwin.handoff import (
     make_handoff_package_id,
 )
 from ix_blackfox_worldtwin.metadata import (
+    COMMERCIAL_LICENSING_URL,
     CORE_DOCTRINE,
     DESCRIPTION_FORBIDDEN_TERMS,
     FOUNDATIONAL_LAW,
@@ -321,6 +323,7 @@ __all__ = [
     "BRANCH_ID_DIGEST_LENGTH",
     "CANONICAL_DOCTRINE",
     "CLAIM_BOUNDARY_RULES",
+    "COMMERCIAL_LICENSING_URL",
     "CONFIDENCE_DIGEST_LENGTH",
     "CONFIDENCE_MAX",
     "CONFIDENCE_MIN",
@@ -462,6 +465,7 @@ __all__ = [
     "SimulationRule",
     "StateDimension",
     "SystemRole",
+    "TriadRole",
     "UncertaintyBand",
     "UncertaintySource",
     "WorldState",
