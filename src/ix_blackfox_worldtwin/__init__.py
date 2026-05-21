@@ -4,11 +4,11 @@ IX-BlackFox-WorldTwin is a source-available governed world-model evidence layer
 for AI-agent decisions.
 
 The current public API exports stable project metadata, doctrine boundaries,
-typed world-state contracts, and evidence reference contracts. Later Wave 1
-commits will add scenario manifests, assumption ledgers, constraint checks,
-deterministic simulation, branching predictions, receipts, reality-delta
-scoring, model-confidence tracking, adaptation gates, and human-reviewable
-handoff packages without weakening this package boundary.
+typed world-state contracts, evidence reference contracts, and uncertainty
+contracts. Later Wave 1 commits will add scenario manifests, assumption ledgers,
+constraint checks, deterministic simulation, branching predictions, receipts,
+reality-delta scoring, model-confidence tracking, adaptation gates, and
+human-reviewable handoff packages without weakening this package boundary.
 """
 
 from ix_blackfox_worldtwin.doctrine import (
@@ -72,10 +72,28 @@ from ix_blackfox_worldtwin.state import (
     create_world_state,
     make_state_id,
 )
+from ix_blackfox_worldtwin.uncertainty import (
+    CONFIDENCE_DIGEST_LENGTH,
+    CONFIDENCE_MAX,
+    CONFIDENCE_MIN,
+    UNCERTAINTY_SCHEMA_VERSION,
+    ConfidenceAssessment,
+    ConfidenceTier,
+    UncertaintyBand,
+    UncertaintySource,
+    classify_confidence,
+    combine_confidence_conservatively,
+    create_confidence_assessment,
+    make_confidence_assessment_id,
+    validate_confidence,
+)
 
 __all__ = [
     "CANONICAL_DOCTRINE",
     "CLAIM_BOUNDARY_RULES",
+    "CONFIDENCE_DIGEST_LENGTH",
+    "CONFIDENCE_MAX",
+    "CONFIDENCE_MIN",
     "CORE_DOCTRINE",
     "DESCRIPTION_FORBIDDEN_TERMS",
     "EVIDENCE_ID_DIGEST_LENGTH",
@@ -95,18 +113,26 @@ __all__ = [
     "STATE_ID_DIGEST_LENGTH",
     "STATE_SCHEMA_VERSION",
     "TRIAD_ROLES",
+    "UNCERTAINTY_SCHEMA_VERSION",
     "VERSION",
     "WORLD_TWIN_FOUNDATIONAL_RULES",
     "ClaimBoundaryRule",
     "ClaimBoundaryViolation",
+    "ConfidenceAssessment",
+    "ConfidenceTier",
     "EvidenceAttribute",
     "EvidenceKind",
     "EvidenceReference",
     "PackageIdentity",
     "StateDimension",
     "SystemRole",
+    "UncertaintyBand",
+    "UncertaintySource",
     "WorldState",
     "WorldStateKind",
+    "classify_confidence",
+    "combine_confidence_conservatively",
+    "create_confidence_assessment",
     "create_evidence_reference",
     "create_evidence_reference_from_hash",
     "create_observed_state",
@@ -124,7 +150,9 @@ __all__ = [
     "hash_evidence_content",
     "is_claim_language_allowed",
     "is_prohibited_claim",
+    "make_confidence_assessment_id",
     "make_evidence_id",
     "make_state_id",
     "render_doctrine_summary",
+    "validate_confidence",
 ]
