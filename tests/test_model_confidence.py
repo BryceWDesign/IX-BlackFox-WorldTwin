@@ -309,7 +309,7 @@ def test_model_confidence_profile_rejects_mismatched_direct_score() -> None:
 
 
 def test_model_confidence_observation_rejects_out_of_range_delta() -> None:
-    with pytest.raises(ValueError, match="score delta must be between -1.0 and 1.0"):
+    with pytest.raises(ValueError, match=r"score delta must be between -1\.0 and 1\.0"):
         worldtwin.create_model_confidence_observation(
             model_id="deterministic-kernel-v1",
             source_kind=worldtwin.ModelConfidenceSourceKind.MANUAL_ADJUSTMENT,
