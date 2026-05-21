@@ -44,7 +44,6 @@ def _branch(
                 unit="score",
                 description="Deterministic risk accumulation.",
                 initial_value=0.0,
-                minimum=0.0,
                 maximum=1.0,
                 clamp_to_bounds=True,
             ),
@@ -121,9 +120,7 @@ def test_classify_risk_severity_and_recommendation() -> None:
     assert worldtwin.classify_risk_recommendation(score=0.40) is (
         worldtwin.RiskRecommendation.CAUTION
     )
-    assert worldtwin.classify_risk_recommendation(score=0.70) is (
-        worldtwin.RiskRecommendation.DENY
-    )
+    assert worldtwin.classify_risk_recommendation(score=0.70) is (worldtwin.RiskRecommendation.DENY)
     assert worldtwin.classify_risk_recommendation(score=0.90) is (
         worldtwin.RiskRecommendation.QUARANTINE
     )
@@ -219,7 +216,10 @@ def test_risk_scoring_rejects_missing_weights() -> None:
 
 
 def test_risk_scoring_rejects_invalid_threshold_order() -> None:
-    with pytest.raises(ValueError, match="risk thresholds must satisfy caution < deny < quarantine"):
+    with pytest.raises(
+        ValueError,
+        match="risk thresholds must satisfy caution < deny < quarantine",
+    ):
         worldtwin.score_branch_risk(
             result=_comparison().leading_result(),
             target_weights={"risk_score": 1.0},
