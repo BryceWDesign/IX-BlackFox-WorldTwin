@@ -4,11 +4,12 @@ IX-BlackFox-WorldTwin is a source-available governed world-model evidence layer
 for AI-agent decisions.
 
 The current public API exports stable project metadata, doctrine boundaries,
-typed world-state contracts, evidence reference contracts, and uncertainty
-contracts. Later Wave 1 commits will add scenario manifests, assumption ledgers,
-constraint checks, deterministic simulation, branching predictions, receipts,
-reality-delta scoring, model-confidence tracking, adaptation gates, and
-human-reviewable handoff packages without weakening this package boundary.
+typed world-state contracts, evidence reference contracts, uncertainty
+contracts, and scenario manifest contracts. Later Wave 1 commits will add
+assumption ledgers, constraint checks, deterministic simulation, branching
+predictions, receipts, reality-delta scoring, model-confidence tracking,
+adaptation gates, and human-reviewable handoff packages without weakening this
+package boundary.
 """
 
 from ix_blackfox_worldtwin.doctrine import (
@@ -60,6 +61,18 @@ from ix_blackfox_worldtwin.metadata import (
     get_package_identity,
     is_prohibited_claim,
 )
+from ix_blackfox_worldtwin.scenario import (
+    SCENARIO_ID_DIGEST_LENGTH,
+    SCENARIO_SCHEMA_VERSION,
+    MeasurableOutput,
+    ScenarioBoundary,
+    ScenarioBoundaryKind,
+    ScenarioManifest,
+    ScenarioVariable,
+    ScenarioVariableKind,
+    create_scenario_manifest,
+    make_scenario_id,
+)
 from ix_blackfox_worldtwin.state import (
     STATE_ID_DIGEST_LENGTH,
     STATE_SCHEMA_VERSION,
@@ -109,6 +122,8 @@ __all__ = [
     "PUBLIC_DESCRIPTION",
     "REPOSITORY_URL",
     "RESEARCH_STATUS",
+    "SCENARIO_ID_DIGEST_LENGTH",
+    "SCENARIO_SCHEMA_VERSION",
     "SHA256_HEX_LENGTH",
     "STATE_ID_DIGEST_LENGTH",
     "STATE_SCHEMA_VERSION",
@@ -123,7 +138,13 @@ __all__ = [
     "EvidenceAttribute",
     "EvidenceKind",
     "EvidenceReference",
+    "MeasurableOutput",
     "PackageIdentity",
+    "ScenarioBoundary",
+    "ScenarioBoundaryKind",
+    "ScenarioManifest",
+    "ScenarioVariable",
+    "ScenarioVariableKind",
     "StateDimension",
     "SystemRole",
     "UncertaintyBand",
@@ -137,6 +158,7 @@ __all__ = [
     "create_evidence_reference_from_hash",
     "create_observed_state",
     "create_predicted_state",
+    "create_scenario_manifest",
     "create_simulated_state",
     "create_world_state",
     "find_claim_boundary_violations",
@@ -152,6 +174,7 @@ __all__ = [
     "is_prohibited_claim",
     "make_confidence_assessment_id",
     "make_evidence_id",
+    "make_scenario_id",
     "make_state_id",
     "render_doctrine_summary",
     "validate_confidence",
