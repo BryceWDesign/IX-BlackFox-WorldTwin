@@ -9,44 +9,58 @@ from __future__ import annotations
 from dataclasses import dataclass
 
 PROJECT_NAME = "IX-BlackFox-WorldTwin"
-PACKAGE_NAME = "ix-blackfox-worldtwin"
+PACKAGE_NAME = "ix_blackfox_worldtwin"
 VERSION = "0.1.0"
 
 LICENSE_NAME = "Source-Available Evaluation License"
-RESEARCH_STATUS = "source-available research prototype"
+RESEARCH_STATUS = "research-prototype"
 
 REPOSITORY_URL = "https://github.com/BryceWDesign/IX-BlackFox-WorldTwin"
+COMMERCIAL_LICENSING_URL = "https://www.linkedin.com/in/brycewdesign/"
 
 FOUNDATIONAL_LAW = (
-    "WorldTwin simulates and records consequence evidence; it does not authorize execution."
+    "WorldTwin creates bounded, reviewable evidence for consequence testing; it does not "
+    "authorize execution."
 )
 
 CORE_DOCTRINE = (
-    "Model thinks -> Cognition structures -> WorldTwin tests consequences -> "
+    "Model thinks -> Cognition structures -> WorldTwin tests possible consequences -> "
     "BlackFox governs execution -> humans authorize -> evidence decides trust."
 )
 
 PUBLIC_DESCRIPTION = (
-    "Source-available governed world-model and simulation evidence layer for "
-    "AI-agent decisions; not AGI, not autonomous authority, and not production-ready."
+    "Source-available governed world-model evidence layer for AI-agent decisions and "
+    "human-reviewable execution evidence."
 )
 
-GITHUB_DESCRIPTION = (
-    "Source-available governed world-model evidence layer for AI-agent decisions."
-)
-GITHUB_DESCRIPTION_LIMIT = 350
+GITHUB_DESCRIPTION = PUBLIC_DESCRIPTION
+GITHUB_DESCRIPTION_LIMIT = 299
 
 GITHUB_TOPICS = (
-    "ai-governance",
-    "world-model",
+    "ai-agents",
     "simulation",
+    "digital-twin",
+    "world-model",
+    "agent-governance",
     "runtime-assurance",
     "evidence",
+    "prediction",
+    "scenario-testing",
+    "assumption-ledger",
+    "reality-delta",
     "human-review",
-    "source-available",
+    "policy-gates",
+    "receipts",
+    "model-evaluation",
+    "risk-analysis",
+    "test-evaluation",
+    "safe-ai",
+    "ai-safety",
+    "decision-support",
 )
 
 DESCRIPTION_FORBIDDEN_TERMS = (
+    "IX-BlackFox-Cognition",
     "AGI",
     "autonomous AGI",
     "self-aware",
@@ -69,6 +83,7 @@ PROHIBITED_CLAIMS = (
     "defense-approved",
     "government-approved",
     "operationally deployed",
+    "real-world predictive authority",
 )
 
 
@@ -82,9 +97,15 @@ class PackageIdentity:
     license_name: str
     research_status: str
     repository_url: str
+    commercial_licensing_url: str
     foundational_law: str
+    doctrine: str
     core_doctrine: str
     public_description: str
+    github_description: str
+    github_description_limit: int
+    github_topics: tuple[str, ...]
+    prohibited_claims: tuple[str, ...]
 
 
 def get_package_identity() -> PackageIdentity:
@@ -97,9 +118,15 @@ def get_package_identity() -> PackageIdentity:
         license_name=LICENSE_NAME,
         research_status=RESEARCH_STATUS,
         repository_url=REPOSITORY_URL,
+        commercial_licensing_url=COMMERCIAL_LICENSING_URL,
         foundational_law=FOUNDATIONAL_LAW,
+        doctrine=CORE_DOCTRINE,
         core_doctrine=CORE_DOCTRINE,
         public_description=PUBLIC_DESCRIPTION,
+        github_description=GITHUB_DESCRIPTION,
+        github_description_limit=GITHUB_DESCRIPTION_LIMIT,
+        github_topics=GITHUB_TOPICS,
+        prohibited_claims=PROHIBITED_CLAIMS,
     )
 
 
@@ -118,24 +145,18 @@ def get_github_topics() -> tuple[str, ...]:
 def get_external_description_issues(description: str) -> tuple[str, ...]:
     """Return conservative issues for public repository descriptions."""
 
+    normalized_description = description.strip()
+    if not normalized_description:
+        return ("description is empty",)
+    if len(normalized_description) > GITHUB_DESCRIPTION_LIMIT:
+        return ("description exceeds GitHub description limit",)
+
+    folded_description = normalized_description.casefold()
     issues: list[str] = []
 
-    if not description.strip():
-        issues.append("description is empty")
-    if len(description) > GITHUB_DESCRIPTION_LIMIT:
-        issues.append("description exceeds GitHub description length limit")
-
-    folded_description = description.casefold()
     for forbidden in DESCRIPTION_FORBIDDEN_TERMS:
         if forbidden.casefold() in folded_description:
-            issues.append(f"description uses prohibited claim language: {forbidden}")
-
-    if "world-model" not in folded_description and "simulation" not in folded_description:
-        issues.append("description should identify the repository as world-model or simulation work")
-    if "evidence" not in folded_description:
-        issues.append("description should mention evidence")
-    if "source-available" not in folded_description:
-        issues.append("description should identify the source-available posture")
+            issues.append(f"description contains prohibited or insider term: {forbidden}")
 
     return tuple(issues)
 
