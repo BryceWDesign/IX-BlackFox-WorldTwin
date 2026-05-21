@@ -211,28 +211,46 @@ def test_reality_delta_report_quarantines_missing_observed_dimension() -> None:
     report = worldtwin.create_reality_delta_report(
         prediction=prediction,
         observed_state=observed_state,
-        tolerances={"temperature": 2.0},
+        tolerances={"temperature": 2.0, "risk_score": 0.10},
         created_at=_created_at(),
         created_by="worldtwin-delta-gate",
     )
 
     assert report.verdict is worldtwin.RealityDeltaVerdict.QUARANTINE
-    assert report.missing_observed_dimensions == ("load", "risk_score")
+    assert report.missing_observed_dimensions == ("risk_score",)
     assert report.highest_delta_severity() is worldtwin.RealityDeltaSeverity.CRITICAL
 
 
-def test_reality_delta_report_rejects_missing_tolerance() -> None:
-    with pytest.raises(
-        ValueError,
-        match="missing reality-delta tolerance for dimension: risk_score",
-    ):
-        worldtwin.create_reality_delta_report(
-            prediction=_prediction(),
-            observed_state=_observed_state(),
-            tolerances={"temperature": 2.0},
-            created_at=_created_at(),
-            created_by="worldtwin-delta-gate",
-        )
+def test_reality_delta_report_rejects_missing_predicted_dimension() -> None:
+    prediction = _prediction()
+
+    report = worldtwin.create_reality_delta_report(
+        prediction=prediction,
+        observed_state=_observed_state(),
+        tolerances={"unknown_dimension": 1.0},
+        created_at=_created_at(),
+        created_by="worldtwin-delta-gate",
+    )
+
+    assert report.verdict is worldtwin.RealityDeltaVerdict.QUARANTINE
+    assert report.missing_predicted_dimensions == ("unknown_dimension",)
+    assert report.missing_observed_dimensions == ("unknown_dimension",)
+
+
+def test_reality_delta_report_ignores_unscored_extra_state_dimensions() -> None:
+    prediction = _prediction()
+    report = worldtwin.create_reality_delta_report(
+        prediction=prediction,
+        observed_state=_observed_state(),
+        tolerances={"temperature": 2.0},
+        created_at=_created_at(),
+        created_by="worldtwin-delta-gate",
+    )
+
+    assert "load" in prediction.final_values
+    assert report.verdict is worldtwin.RealityDeltaVerdict.MATCH
+    assert report.missing_observed_dimensions == ()
+    assert report.delta_table() == {"temperature": 0.25}
 
 
 def test_reality_delta_report_rejects_non_observed_reality_state() -> None:
