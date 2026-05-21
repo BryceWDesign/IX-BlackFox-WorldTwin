@@ -127,7 +127,9 @@ class ReceiptChain:
             raise ValueError("receipt chain requires at least one entry")
 
         object.__setattr__(self, "chain_id", _require_non_empty(self.chain_id, "chain id"))
-        object.__setattr__(self, "entries", tuple(sorted(self.entries, key=lambda item: item.sequence_number)))
+        object.__setattr__(
+            self, "entries", tuple(sorted(self.entries, key=lambda item: item.sequence_number))
+        )
         object.__setattr__(
             self,
             "created_at",
@@ -200,7 +202,9 @@ class ReceiptChainValidationResult:
         """Validate and normalize a receipt-chain validation result."""
 
         expected_status = (
-            ReceiptChainValidationStatus.PASS if not self.issues else ReceiptChainValidationStatus.FAIL
+            ReceiptChainValidationStatus.PASS
+            if not self.issues
+            else ReceiptChainValidationStatus.FAIL
         )
         if self.status is not expected_status:
             raise ValueError("receipt-chain validation status must match issue state")
@@ -305,7 +309,7 @@ def append_receipt_to_chain(
         previous_entry_hash=chain.head.entry_hash,
         starting_sequence_number=chain.head.sequence_number + 1,
     )[0]
-    new_entries = chain.entries + (new_entry,)
+    new_entries = (*chain.entries, new_entry)
     new_chain_id = make_receipt_chain_id(
         entries=new_entries,
         created_at=chain.created_at,
