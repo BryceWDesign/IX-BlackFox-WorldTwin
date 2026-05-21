@@ -9,8 +9,8 @@ contracts, scenario manifest contracts, scenario validation gates, CI-safe
 example scenarios, assumption ledger contracts, constraint-engine contracts,
 policy-evaluation contracts, deterministic simulation contracts, branching
 simulation contracts, risk-scoring contracts, reproducibility contracts,
-prediction-result contracts, prediction-receipt contracts, and receipt-chain
-integrity contracts. Later Wave 1 commits will add reality-delta scoring,
+prediction-result contracts, prediction-receipt contracts, receipt-chain
+integrity contracts, and reality-delta contracts. Later Wave 1 commits will add
 model-confidence tracking, adaptation gates, and human-reviewable handoff
 packages without weakening this package boundary.
 """
@@ -156,6 +156,19 @@ from ix_blackfox_worldtwin.receipts import (
     create_prediction_receipt,
     make_prediction_receipt_id,
 )
+from ix_blackfox_worldtwin.reality_delta import (
+    REALITY_DELTA_ID_DIGEST_LENGTH,
+    REALITY_DELTA_SCHEMA_VERSION,
+    DimensionDelta,
+    RealityDeltaReport,
+    RealityDeltaSeverity,
+    RealityDeltaVerdict,
+    classify_reality_delta_severity,
+    classify_reality_delta_verdict,
+    create_dimension_delta,
+    create_reality_delta_report,
+    make_reality_delta_report_id,
+)
 from ix_blackfox_worldtwin.reproducibility import (
     REPRODUCIBILITY_ID_DIGEST_LENGTH,
     REPRODUCIBILITY_SCHEMA_VERSION,
@@ -275,6 +288,8 @@ __all__ = [
     "PROHIBITED_CLAIMS",
     "PROJECT_NAME",
     "PUBLIC_DESCRIPTION",
+    "REALITY_DELTA_ID_DIGEST_LENGTH",
+    "REALITY_DELTA_SCHEMA_VERSION",
     "RECEIPT_CHAIN_ID_DIGEST_LENGTH",
     "RECEIPT_CHAIN_SCHEMA_VERSION",
     "RECEIPT_ID_DIGEST_LENGTH",
@@ -316,6 +331,7 @@ __all__ = [
     "ConstraintRule",
     "ConstraintSet",
     "ConstraintSeverity",
+    "DimensionDelta",
     "EvidenceAttribute",
     "EvidenceKind",
     "EvidenceReference",
@@ -330,6 +346,9 @@ __all__ = [
     "PredictionReceipt",
     "PredictionResult",
     "PredictionSourceKind",
+    "RealityDeltaReport",
+    "RealityDeltaSeverity",
+    "RealityDeltaVerdict",
     "ReceiptArtifact",
     "ReceiptChain",
     "ReceiptChainEntry",
@@ -368,6 +387,8 @@ __all__ = [
     "build_thermal_drift_scenario",
     "check_reproducibility",
     "classify_confidence",
+    "classify_reality_delta_severity",
+    "classify_reality_delta_verdict",
     "classify_risk_recommendation",
     "classify_risk_severity",
     "combine_confidence_conservatively",
@@ -378,6 +399,7 @@ __all__ = [
     "create_confidence_assessment",
     "create_constraint_rule",
     "create_constraint_set",
+    "create_dimension_delta",
     "create_evidence_reference",
     "create_evidence_reference_from_hash",
     "create_observed_state",
@@ -385,6 +407,7 @@ __all__ = [
     "create_prediction_receipt",
     "create_prediction_result",
     "create_receipt_chain",
+    "create_reality_delta_report",
     "create_reproducibility_manifest",
     "create_risk_factor",
     "create_scenario_manifest",
@@ -416,6 +439,7 @@ __all__ = [
     "make_policy_evaluation_id",
     "make_prediction_id",
     "make_prediction_receipt_id",
+    "make_reality_delta_report_id",
     "make_receipt_chain_entry_hash",
     "make_receipt_chain_entry_id",
     "make_receipt_chain_id",
