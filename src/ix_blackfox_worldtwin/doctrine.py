@@ -17,7 +17,15 @@ class SystemRole(StrEnum):
     COGNITION = "cognition"
     WORLD_TWIN = "world-twin"
     EXECUTION_GOVERNANCE = "execution-governance"
-    HUMAN_AUTHORITY = "human-authority"
+
+
+@dataclass(frozen=True, slots=True)
+class TriadRole:
+    """A named role, responsibility, and boundary in the IX-BlackFox triad."""
+
+    component: str
+    responsibility: str
+    boundary: str
 
 
 @dataclass(frozen=True, slots=True)
@@ -35,82 +43,101 @@ class ClaimBoundaryViolation:
     """A detected claim-boundary violation."""
 
     rule_id: str
-    phrase: str
+    matched_phrase: str
     reason: str
     safer_language: str
 
 
 CANONICAL_DOCTRINE = (
-    "Model thinks -> Cognition structures -> WorldTwin tests consequences -> "
+    "Model thinks -> Cognition structures -> WorldTwin tests possible consequences -> "
     "BlackFox governs execution -> humans authorize -> evidence decides trust."
 )
 
-TRIAD_ROLES: tuple[tuple[SystemRole, str], ...] = (
-    (
-        SystemRole.COGNITION,
-        "Structures intent, claims, plans, beliefs, and model-side reasoning into "
-        "inspectable cognitive artifacts.",
+TRIAD_ROLES: tuple[TriadRole, ...] = (
+    TriadRole(
+        component="IX-BlackFox-Cognition",
+        responsibility=(
+            "structures intent, claims, plans, beliefs, and model-side reasoning into "
+            "inspectable cognitive artifacts"
+        ),
+        boundary=("does not execute actions, certify claims, or bypass downstream evidence gates"),
     ),
-    (
-        SystemRole.WORLD_TWIN,
-        "Tests scenarios, assumptions, constraints, predicted consequences, and "
-        "simulation evidence before execution handoff.",
+    TriadRole(
+        component="IX-BlackFox-WorldTwin",
+        responsibility=(
+            "tests bounded scenarios, assumptions, constraints, predicted consequences, "
+            "and reality-delta evidence before execution handoff"
+        ),
+        boundary=(
+            "does not authorize action, certify safety, or turn predicted outcomes into authority"
+        ),
     ),
-    (
-        SystemRole.EXECUTION_GOVERNANCE,
-        "Routes proposed actions through policy gates, receipts, evidence bundles, "
-        "workspace controls, and human review.",
-    ),
-    (
-        SystemRole.HUMAN_AUTHORITY,
-        "Retains final authority over approval, rejection, deployment, and operational use.",
+    TriadRole(
+        component="IX-BlackFox",
+        responsibility=(
+            "governs proposed execution through policy gates, receipts, evidence bundles, "
+            "workspace controls, and reviewable handoff packages"
+        ),
+        boundary=(
+            "does not execute proposed changes without human authorization and explicit review"
+        ),
     ),
 )
 
 WORLD_TWIN_FOUNDATIONAL_RULES: tuple[str, ...] = (
-    "WorldTwin does not execute real-world actions.",
+    "Predictions are evidence, not authority.",
+    "Simulated outcomes must remain accountable to observed outcomes.",
+    "WorldTwin may not execute action or authorize execution.",
     "WorldTwin does not certify safety, legality, military suitability, or production readiness.",
     "WorldTwin predictions are bounded by stated assumptions, scenario scope, and evidence inputs.",
     "WorldTwin outputs must be reviewable before any BlackFox execution-governance handoff.",
     "WorldTwin evidence must preserve provenance, replayability, confidence, and uncertainty.",
-    "WorldTwin must fail closed when assumptions, constraints, evidence, or review authority are missing.",
+    "WorldTwin must fail closed when assumptions, constraints, evidence, or review authority "
+    "are missing.",
 )
 
 CLAIM_BOUNDARY_RULES: tuple[ClaimBoundaryRule, ...] = (
     ClaimBoundaryRule(
         rule_id="no-agi-claim",
         phrase="AGI",
-        reason="The project is governed simulation infrastructure, not an artificial general intelligence.",
-        safer_language="AGI-emulative governance architecture or governed simulation layer",
+        reason=(
+            "The project is governed simulation infrastructure, not an artificial general "
+            "intelligence."
+        ),
+        safer_language="governed world-model evidence layer",
     ),
     ClaimBoundaryRule(
         rule_id="no-autonomous-authority",
         phrase="autonomous authority",
-        reason="The project produces reviewable evidence and must not imply authority to act alone.",
+        reason=(
+            "The project produces reviewable evidence and must not imply authority to act " "alone."
+        ),
         safer_language="human-reviewable execution evidence",
     ),
     ClaimBoundaryRule(
-        rule_id="no-certified-safety",
-        phrase="certified safe",
+        rule_id="no-certification",
+        phrase="certified",
         reason="No certification, accreditation, or regulatory approval is claimed.",
-        safer_language="bounded safety evidence for review",
+        safer_language="bounded evidence for review",
     ),
     ClaimBoundaryRule(
-        rule_id="no-defense-approval",
-        phrase="defense approved",
-        reason="The project is not endorsed, approved, funded, or certified by any defense organization.",
+        rule_id="no-defense-affiliation",
+        phrase="defense-approved",
+        reason=(
+            "The project is not endorsed, approved, funded, or certified by defense " "authorities."
+        ),
         safer_language="defense-relevant research prototype",
     ),
     ClaimBoundaryRule(
-        rule_id="no-production-ready",
-        phrase="production ready",
-        reason="The current state is a research prototype and should not be described as deployable.",
+        rule_id="no-production-readiness",
+        phrase="production-ready",
+        reason="The current state is a research prototype and must not be described as deployable.",
         safer_language="research prototype or evaluation prototype",
     ),
 )
 
 
-def get_triad_roles() -> tuple[tuple[SystemRole, str], ...]:
+def get_triad_roles() -> tuple[TriadRole, ...]:
     """Return the canonical IX-BlackFox ecosystem role split."""
 
     return TRIAD_ROLES
@@ -139,7 +166,7 @@ def find_claim_boundary_violations(text: str) -> tuple[ClaimBoundaryViolation, .
             violations.append(
                 ClaimBoundaryViolation(
                     rule_id=rule.rule_id,
-                    phrase=rule.phrase,
+                    matched_phrase=rule.phrase,
                     reason=rule.reason,
                     safer_language=rule.safer_language,
                 )
@@ -155,15 +182,6 @@ def is_claim_language_allowed(text: str) -> bool:
 
 
 def render_doctrine_summary() -> str:
-    """Render a compact doctrine summary for README or external review."""
+    """Render the compact canonical doctrine summary."""
 
-    role_lines = "\n".join(f"- {role.value}: {description}" for role, description in TRIAD_ROLES)
-    rule_lines = "\n".join(f"- {rule}" for rule in WORLD_TWIN_FOUNDATIONAL_RULES)
-
-    return (
-        f"{CANONICAL_DOCTRINE}\n\n"
-        "Roles:\n"
-        f"{role_lines}\n\n"
-        "WorldTwin foundational rules:\n"
-        f"{rule_lines}"
-    )
+    return CANONICAL_DOCTRINE
