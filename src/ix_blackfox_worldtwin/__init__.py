@@ -10,8 +10,8 @@ example scenarios, assumption ledger contracts, constraint-engine contracts,
 policy-evaluation contracts, deterministic simulation contracts, branching
 simulation contracts, risk-scoring contracts, reproducibility contracts,
 prediction-result contracts, prediction-receipt contracts, receipt-chain
-integrity contracts, and reality-delta contracts. Later Wave 1 commits will add
-model-confidence tracking, adaptation gates, and human-reviewable handoff
+integrity contracts, reality-delta contracts, and model-confidence contracts.
+Later Wave 1 commits will add adaptation gates and human-reviewable handoff
 packages without weakening this package boundary.
 """
 
@@ -111,6 +111,22 @@ from ix_blackfox_worldtwin.metadata import (
     get_github_topics,
     get_package_identity,
     is_prohibited_claim,
+)
+from ix_blackfox_worldtwin.model_confidence import (
+    MODEL_CONFIDENCE_ID_DIGEST_LENGTH,
+    MODEL_CONFIDENCE_SCHEMA_VERSION,
+    ModelConfidenceObservation,
+    ModelConfidenceProfile,
+    ModelConfidenceSourceKind,
+    ModelTrustTier,
+    calculate_model_confidence_score,
+    classify_model_trust_tier,
+    create_model_confidence_observation,
+    create_model_confidence_profile,
+    create_reality_delta_confidence_observation,
+    make_model_confidence_observation_id,
+    make_model_confidence_profile_id,
+    update_model_confidence_from_reality_delta,
 )
 from ix_blackfox_worldtwin.policy import (
     POLICY_ID_DIGEST_LENGTH,
@@ -280,6 +296,8 @@ __all__ = [
     "GITHUB_DESCRIPTION_LIMIT",
     "GITHUB_TOPICS",
     "LICENSE_NAME",
+    "MODEL_CONFIDENCE_ID_DIGEST_LENGTH",
+    "MODEL_CONFIDENCE_SCHEMA_VERSION",
     "PACKAGE_NAME",
     "POLICY_ID_DIGEST_LENGTH",
     "POLICY_SCHEMA_VERSION",
@@ -336,6 +354,10 @@ __all__ = [
     "EvidenceKind",
     "EvidenceReference",
     "MeasurableOutput",
+    "ModelConfidenceObservation",
+    "ModelConfidenceProfile",
+    "ModelConfidenceSourceKind",
+    "ModelTrustTier",
     "PackageIdentity",
     "PolicyDecision",
     "PolicyEvaluation",
@@ -385,8 +407,10 @@ __all__ = [
     "append_receipt_to_chain",
     "build_resource_pressure_scenario",
     "build_thermal_drift_scenario",
+    "calculate_model_confidence_score",
     "check_reproducibility",
     "classify_confidence",
+    "classify_model_trust_tier",
     "classify_reality_delta_severity",
     "classify_reality_delta_verdict",
     "classify_risk_recommendation",
@@ -402,6 +426,8 @@ __all__ = [
     "create_dimension_delta",
     "create_evidence_reference",
     "create_evidence_reference_from_hash",
+    "create_model_confidence_observation",
+    "create_model_confidence_profile",
     "create_observed_state",
     "create_predicted_state",
     "create_prediction_receipt",
@@ -413,6 +439,7 @@ __all__ = [
     "create_scenario_manifest",
     "create_simulated_state",
     "create_simulation_rule",
+    "create_reality_delta_confidence_observation",
     "create_world_state",
     "ensure_scenario_manifest_replayable",
     "evaluate_worldtwin_policy",
@@ -436,6 +463,8 @@ __all__ = [
     "make_constraint_rule_id",
     "make_constraint_set_id",
     "make_evidence_id",
+    "make_model_confidence_observation_id",
+    "make_model_confidence_profile_id",
     "make_policy_evaluation_id",
     "make_prediction_id",
     "make_prediction_receipt_id",
@@ -456,6 +485,7 @@ __all__ = [
     "run_branching_simulation",
     "run_deterministic_simulation",
     "score_branch_risk",
+    "update_model_confidence_from_reality_delta",
     "validate_confidence",
     "validate_receipt_chain",
     "validate_scenario_manifest",
