@@ -264,9 +264,7 @@ def make_policy_evaluation_id(
         ).isoformat(),
         "decision": decision.value,
         "evaluator": _require_non_empty(evaluator, "evaluator"),
-        "reasons": [
-            reason.canonical_payload() for reason in _normalize_reasons(reasons)
-        ],
+        "reasons": [reason.canonical_payload() for reason in _normalize_reasons(reasons)],
         "scenario_id": _require_non_empty(scenario_id, "scenario id"),
         "schema_version": POLICY_SCHEMA_VERSION,
     }
