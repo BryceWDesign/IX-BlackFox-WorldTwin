@@ -46,7 +46,9 @@ class EvidenceAttribute:
         """Validate and normalize an evidence attribute."""
 
         object.__setattr__(self, "key", _require_non_empty(self.key, "evidence attribute key"))
-        object.__setattr__(self, "value", _require_non_empty(self.value, "evidence attribute value"))
+        object.__setattr__(
+            self, "value", _require_non_empty(self.value, "evidence attribute value")
+        )
 
     def canonical_payload(self) -> dict[str, str]:
         """Return a deterministic payload for hashing."""
@@ -196,10 +198,7 @@ def create_evidence_reference_from_hash(
 def hash_evidence_content(content: str | bytes) -> str:
     """Return the SHA-256 hash for evidence content."""
 
-    if isinstance(content, str):
-        encoded_content = content.encode("utf-8")
-    else:
-        encoded_content = content
+    encoded_content = content.encode("utf-8") if isinstance(content, str) else content
     return hashlib.sha256(encoded_content).hexdigest()
 
 
