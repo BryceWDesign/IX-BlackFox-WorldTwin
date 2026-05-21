@@ -6,10 +6,11 @@ for AI-agent decisions.
 The current public API exports stable project metadata, doctrine boundaries,
 typed world-state contracts, evidence reference contracts, uncertainty
 contracts, scenario manifest contracts, scenario validation gates, CI-safe
-example scenarios, assumption ledger contracts, and constraint-engine contracts.
-Later Wave 1 commits will add deterministic simulation, branching predictions,
-receipts, reality-delta scoring, model-confidence tracking, adaptation gates,
-and human-reviewable handoff packages without weakening this package boundary.
+example scenarios, assumption ledger contracts, constraint-engine contracts, and
+policy-evaluation contracts. Later Wave 1 commits will add deterministic
+simulation, branching predictions, receipts, reality-delta scoring,
+model-confidence tracking, adaptation gates, and human-reviewable handoff
+packages without weakening this package boundary.
 """
 
 from ix_blackfox_worldtwin.assumptions import (
@@ -97,6 +98,16 @@ from ix_blackfox_worldtwin.metadata import (
     get_package_identity,
     is_prohibited_claim,
 )
+from ix_blackfox_worldtwin.policy import (
+    POLICY_ID_DIGEST_LENGTH,
+    POLICY_SCHEMA_VERSION,
+    PolicyDecision,
+    PolicyEvaluation,
+    PolicyReason,
+    PolicyReasonSeverity,
+    evaluate_worldtwin_policy,
+    make_policy_evaluation_id,
+)
 from ix_blackfox_worldtwin.scenario import (
     SCENARIO_ID_DIGEST_LENGTH,
     SCENARIO_SCHEMA_VERSION,
@@ -166,6 +177,8 @@ __all__ = [
     "GITHUB_TOPICS",
     "LICENSE_NAME",
     "PACKAGE_NAME",
+    "POLICY_ID_DIGEST_LENGTH",
+    "POLICY_SCHEMA_VERSION",
     "PROHIBITED_CLAIMS",
     "PROJECT_NAME",
     "PUBLIC_DESCRIPTION",
@@ -201,6 +214,10 @@ __all__ = [
     "EvidenceReference",
     "MeasurableOutput",
     "PackageIdentity",
+    "PolicyDecision",
+    "PolicyEvaluation",
+    "PolicyReason",
+    "PolicyReasonSeverity",
     "RequiredEvidence",
     "ScenarioBoundary",
     "ScenarioBoundaryKind",
@@ -233,6 +250,7 @@ __all__ = [
     "create_simulated_state",
     "create_world_state",
     "ensure_scenario_manifest_replayable",
+    "evaluate_worldtwin_policy",
     "find_claim_boundary_violations",
     "get_claim_boundary_rules",
     "get_external_description_issues",
@@ -251,6 +269,7 @@ __all__ = [
     "make_constraint_rule_id",
     "make_constraint_set_id",
     "make_evidence_id",
+    "make_policy_evaluation_id",
     "make_scenario_id",
     "make_state_id",
     "render_doctrine_summary",
