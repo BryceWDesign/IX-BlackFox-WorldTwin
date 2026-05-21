@@ -5,11 +5,11 @@ for AI-agent decisions.
 
 The current public API exports stable project metadata, doctrine boundaries,
 typed world-state contracts, evidence reference contracts, uncertainty
-contracts, and scenario manifest contracts. Later Wave 1 commits will add
-assumption ledgers, constraint checks, deterministic simulation, branching
-predictions, receipts, reality-delta scoring, model-confidence tracking,
-adaptation gates, and human-reviewable handoff packages without weakening this
-package boundary.
+contracts, scenario manifest contracts, and scenario validation gates. Later
+Wave 1 commits will add assumption ledgers, constraint checks, deterministic
+simulation, branching predictions, receipts, reality-delta scoring,
+model-confidence tracking, adaptation gates, and human-reviewable handoff
+packages without weakening this package boundary.
 """
 
 from ix_blackfox_worldtwin.doctrine import (
@@ -72,6 +72,13 @@ from ix_blackfox_worldtwin.scenario import (
     ScenarioVariableKind,
     create_scenario_manifest,
     make_scenario_id,
+)
+from ix_blackfox_worldtwin.scenario_validation import (
+    ScenarioValidationIssue,
+    ScenarioValidationResult,
+    ScenarioValidationSeverity,
+    ensure_scenario_manifest_replayable,
+    validate_scenario_manifest,
 )
 from ix_blackfox_worldtwin.state import (
     STATE_ID_DIGEST_LENGTH,
@@ -143,6 +150,9 @@ __all__ = [
     "ScenarioBoundary",
     "ScenarioBoundaryKind",
     "ScenarioManifest",
+    "ScenarioValidationIssue",
+    "ScenarioValidationResult",
+    "ScenarioValidationSeverity",
     "ScenarioVariable",
     "ScenarioVariableKind",
     "StateDimension",
@@ -161,6 +171,7 @@ __all__ = [
     "create_scenario_manifest",
     "create_simulated_state",
     "create_world_state",
+    "ensure_scenario_manifest_replayable",
     "find_claim_boundary_violations",
     "get_claim_boundary_rules",
     "get_external_description_issues",
@@ -178,4 +189,5 @@ __all__ = [
     "make_state_id",
     "render_doctrine_summary",
     "validate_confidence",
+    "validate_scenario_manifest",
 ]
