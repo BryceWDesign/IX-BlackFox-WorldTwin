@@ -293,9 +293,7 @@ def make_prediction_id(
         "disposition": disposition.value,
         "final_state_fingerprint": final_state.fingerprint(),
         "final_state_id": final_state.state_id,
-        "findings": [
-            finding.canonical_payload() for finding in _normalize_findings(findings)
-        ],
+        "findings": [finding.canonical_payload() for finding in _normalize_findings(findings)],
         "policy_evaluation_id": policy_evaluation_id.strip(),
         "reproducibility_manifest_id": reproducibility_manifest_id.strip(),
         "risk_profile_id": risk_profile_id.strip(),
@@ -374,10 +372,7 @@ def _build_prediction_findings(
     findings: list[PredictionFinding] = [
         PredictionFinding(
             code=f"confidence-{confidence_assessment.tier.value}",
-            message=(
-                "Prediction confidence tier is "
-                f"{confidence_assessment.tier.value}."
-            ),
+            message=(f"Prediction confidence tier is {confidence_assessment.tier.value}."),
             source=f"confidence:{confidence_assessment.assessment_id}",
         )
     ]
@@ -394,10 +389,7 @@ def _build_prediction_findings(
         findings.append(
             PredictionFinding(
                 code=f"risk-{risk_profile.recommendation.value}",
-                message=(
-                    "Risk profile recommendation is "
-                    f"{risk_profile.recommendation.value}."
-                ),
+                message=(f"Risk profile recommendation is {risk_profile.recommendation.value}."),
                 source=f"risk:{risk_profile.profile_id}",
             )
         )
