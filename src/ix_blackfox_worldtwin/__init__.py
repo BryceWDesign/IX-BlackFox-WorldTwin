@@ -5,13 +5,27 @@ for AI-agent decisions.
 
 The current public API exports stable project metadata, doctrine boundaries,
 typed world-state contracts, evidence reference contracts, uncertainty
-contracts, scenario manifest contracts, scenario validation gates, and CI-safe
-example scenarios. Later Wave 1 commits will add assumption ledgers, constraint
-checks, deterministic simulation, branching predictions, receipts,
+contracts, scenario manifest contracts, scenario validation gates, CI-safe
+example scenarios, and assumption ledger contracts. Later Wave 1 commits will
+add constraint checks, deterministic simulation, branching predictions, receipts,
 reality-delta scoring, model-confidence tracking, adaptation gates, and
 human-reviewable handoff packages without weakening this package boundary.
 """
 
+from ix_blackfox_worldtwin.assumptions import (
+    ASSUMPTION_ID_DIGEST_LENGTH,
+    ASSUMPTION_SCHEMA_VERSION,
+    AssumptionCategory,
+    AssumptionImpactLevel,
+    AssumptionLedger,
+    AssumptionRecord,
+    AssumptionStatus,
+    RequiredEvidence,
+    create_assumption_ledger,
+    create_assumption_record,
+    make_assumption_id,
+    make_assumption_ledger_id,
+)
 from ix_blackfox_worldtwin.doctrine import (
     CANONICAL_DOCTRINE,
     CLAIM_BOUNDARY_RULES,
@@ -116,6 +130,8 @@ from ix_blackfox_worldtwin.uncertainty import (
 )
 
 __all__ = [
+    "ASSUMPTION_ID_DIGEST_LENGTH",
+    "ASSUMPTION_SCHEMA_VERSION",
     "CANONICAL_DOCTRINE",
     "CLAIM_BOUNDARY_RULES",
     "CONFIDENCE_DIGEST_LENGTH",
@@ -147,6 +163,11 @@ __all__ = [
     "UNCERTAINTY_SCHEMA_VERSION",
     "VERSION",
     "WORLD_TWIN_FOUNDATIONAL_RULES",
+    "AssumptionCategory",
+    "AssumptionImpactLevel",
+    "AssumptionLedger",
+    "AssumptionRecord",
+    "AssumptionStatus",
     "ClaimBoundaryRule",
     "ClaimBoundaryViolation",
     "ConfidenceAssessment",
@@ -156,6 +177,7 @@ __all__ = [
     "EvidenceReference",
     "MeasurableOutput",
     "PackageIdentity",
+    "RequiredEvidence",
     "ScenarioBoundary",
     "ScenarioBoundaryKind",
     "ScenarioManifest",
@@ -174,6 +196,8 @@ __all__ = [
     "build_thermal_drift_scenario",
     "classify_confidence",
     "combine_confidence_conservatively",
+    "create_assumption_ledger",
+    "create_assumption_record",
     "create_confidence_assessment",
     "create_evidence_reference",
     "create_evidence_reference_from_hash",
@@ -195,6 +219,8 @@ __all__ = [
     "hash_evidence_content",
     "is_claim_language_allowed",
     "is_prohibited_claim",
+    "make_assumption_id",
+    "make_assumption_ledger_id",
     "make_confidence_assessment_id",
     "make_evidence_id",
     "make_scenario_id",
