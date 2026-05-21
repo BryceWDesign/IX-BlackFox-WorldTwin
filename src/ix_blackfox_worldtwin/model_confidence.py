@@ -222,9 +222,7 @@ class ModelConfidenceProfile:
             "created_by": self.created_by,
             "model_id": self.model_id,
             "notes": list(self.notes),
-            "observations": [
-                observation.canonical_payload() for observation in self.observations
-            ],
+            "observations": [observation.canonical_payload() for observation in self.observations],
             "profile_id": self.profile_id,
             "schema_version": self.schema_version,
             "trust_tier": self.trust_tier.value,
@@ -377,7 +375,7 @@ def update_model_confidence_from_reality_delta(
     return create_model_confidence_profile(
         model_id=profile.model_id,
         base_confidence=profile.base_confidence,
-        observations=profile.observations + (observation,),
+        observations=(*profile.observations, observation),
         created_at=created_at,
         created_by=created_by,
         notes=profile.notes,
@@ -392,7 +390,9 @@ def calculate_model_confidence_score(
     """Calculate bounded confidence score from base confidence and observations."""
 
     base = _require_unit_interval(base_confidence, "base confidence")
-    net_delta = sum(observation.score_delta for observation in _normalize_observations(observations))
+    net_delta = sum(
+        observation.score_delta for observation in _normalize_observations(observations)
+    )
     return min(1.0, max(0.0, base + net_delta))
 
 
@@ -466,8 +466,7 @@ def make_model_confidence_profile_id(
         "model_id": _require_non_empty(model_id, "model id"),
         "notes": list(_normalize_unique_text_tuple(notes, "profile note")),
         "observations": [
-            observation.canonical_payload()
-            for observation in _normalize_observations(observations)
+            observation.canonical_payload() for observation in _normalize_observations(observations)
         ],
         "schema_version": MODEL_CONFIDENCE_SCHEMA_VERSION,
         "trust_tier": trust_tier.value,
@@ -494,7 +493,9 @@ def _normalize_observations(
 
     for observation in observations:
         if observation.observation_id in seen_ids:
-            raise ValueError(f"duplicate model-confidence observation: {observation.observation_id}")
+            raise ValueError(
+                f"duplicate model-confidence observation: {observation.observation_id}"
+            )
         seen_ids.add(observation.observation_id)
         normalized.append(observation)
 
