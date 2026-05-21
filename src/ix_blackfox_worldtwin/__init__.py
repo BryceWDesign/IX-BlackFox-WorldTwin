@@ -5,11 +5,11 @@ for AI-agent decisions.
 
 The current public API exports stable project metadata, doctrine boundaries,
 typed world-state contracts, evidence reference contracts, uncertainty
-contracts, scenario manifest contracts, and scenario validation gates. Later
-Wave 1 commits will add assumption ledgers, constraint checks, deterministic
-simulation, branching predictions, receipts, reality-delta scoring,
-model-confidence tracking, adaptation gates, and human-reviewable handoff
-packages without weakening this package boundary.
+contracts, scenario manifest contracts, scenario validation gates, and CI-safe
+example scenarios. Later Wave 1 commits will add assumption ledgers, constraint
+checks, deterministic simulation, branching predictions, receipts,
+reality-delta scoring, model-confidence tracking, adaptation gates, and
+human-reviewable handoff packages without weakening this package boundary.
 """
 
 from ix_blackfox_worldtwin.doctrine import (
@@ -38,6 +38,13 @@ from ix_blackfox_worldtwin.evidence import (
     create_evidence_reference_from_hash,
     hash_evidence_content,
     make_evidence_id,
+)
+from ix_blackfox_worldtwin.examples import (
+    EXAMPLE_CREATED_AT,
+    EXAMPLE_CREATOR,
+    build_resource_pressure_scenario,
+    build_thermal_drift_scenario,
+    get_wave1_example_scenarios,
 )
 from ix_blackfox_worldtwin.metadata import (
     CORE_DOCTRINE,
@@ -118,6 +125,8 @@ __all__ = [
     "DESCRIPTION_FORBIDDEN_TERMS",
     "EVIDENCE_ID_DIGEST_LENGTH",
     "EVIDENCE_SCHEMA_VERSION",
+    "EXAMPLE_CREATED_AT",
+    "EXAMPLE_CREATOR",
     "FOUNDATIONAL_LAW",
     "GITHUB_DESCRIPTION",
     "GITHUB_DESCRIPTION_LIMIT",
@@ -161,6 +170,8 @@ __all__ = [
     "UncertaintySource",
     "WorldState",
     "WorldStateKind",
+    "build_resource_pressure_scenario",
+    "build_thermal_drift_scenario",
     "classify_confidence",
     "combine_confidence_conservatively",
     "create_confidence_assessment",
@@ -179,6 +190,7 @@ __all__ = [
     "get_github_topics",
     "get_package_identity",
     "get_triad_roles",
+    "get_wave1_example_scenarios",
     "get_worldtwin_foundational_rules",
     "hash_evidence_content",
     "is_claim_language_allowed",
