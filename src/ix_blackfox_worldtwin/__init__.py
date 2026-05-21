@@ -8,10 +8,11 @@ typed world-state contracts, evidence reference contracts, uncertainty
 contracts, scenario manifest contracts, scenario validation gates, CI-safe
 example scenarios, assumption ledger contracts, constraint-engine contracts,
 policy-evaluation contracts, deterministic simulation contracts, branching
-simulation contracts, risk-scoring contracts, reproducibility contracts, and
-prediction-result contracts. Later Wave 1 commits will add prediction receipts,
-reality-delta scoring, model-confidence tracking, adaptation gates, and
-human-reviewable handoff packages without weakening this package boundary.
+simulation contracts, risk-scoring contracts, reproducibility contracts,
+prediction-result contracts, and prediction-receipt contracts. Later Wave 1
+commits will add receipt-chain integrity, reality-delta scoring,
+model-confidence tracking, adaptation gates, and human-reviewable handoff
+packages without weakening this package boundary.
 """
 
 from ix_blackfox_worldtwin.assumptions import (
@@ -131,6 +132,15 @@ from ix_blackfox_worldtwin.prediction import (
     create_prediction_result,
     make_prediction_id,
 )
+from ix_blackfox_worldtwin.receipts import (
+    RECEIPT_ID_DIGEST_LENGTH,
+    RECEIPT_SCHEMA_VERSION,
+    PredictionReceipt,
+    ReceiptArtifact,
+    ReceiptReviewDecision,
+    create_prediction_receipt,
+    make_prediction_receipt_id,
+)
 from ix_blackfox_worldtwin.reproducibility import (
     REPRODUCIBILITY_ID_DIGEST_LENGTH,
     REPRODUCIBILITY_SCHEMA_VERSION,
@@ -249,6 +259,8 @@ __all__ = [
     "PROHIBITED_CLAIMS",
     "PROJECT_NAME",
     "PUBLIC_DESCRIPTION",
+    "RECEIPT_ID_DIGEST_LENGTH",
+    "RECEIPT_SCHEMA_VERSION",
     "REPOSITORY_URL",
     "REPRODUCIBILITY_ID_DIGEST_LENGTH",
     "REPRODUCIBILITY_SCHEMA_VERSION",
@@ -297,8 +309,11 @@ __all__ = [
     "PolicyReasonSeverity",
     "PredictionDisposition",
     "PredictionFinding",
+    "PredictionReceipt",
     "PredictionResult",
     "PredictionSourceKind",
+    "ReceiptArtifact",
+    "ReceiptReviewDecision",
     "ReproducibilityArtifact",
     "ReproducibilityCheck",
     "ReproducibilityManifest",
@@ -344,6 +359,7 @@ __all__ = [
     "create_evidence_reference_from_hash",
     "create_observed_state",
     "create_predicted_state",
+    "create_prediction_receipt",
     "create_prediction_result",
     "create_reproducibility_manifest",
     "create_risk_factor",
@@ -375,6 +391,7 @@ __all__ = [
     "make_evidence_id",
     "make_policy_evaluation_id",
     "make_prediction_id",
+    "make_prediction_receipt_id",
     "make_reproducibility_check_id",
     "make_reproducibility_manifest_id",
     "make_risk_comparison_id",
