@@ -10,9 +10,8 @@ example scenarios, assumption ledger contracts, constraint-engine contracts,
 policy-evaluation contracts, deterministic simulation contracts, branching
 simulation contracts, risk-scoring contracts, reproducibility contracts,
 prediction-result contracts, prediction-receipt contracts, receipt-chain
-integrity contracts, reality-delta contracts, model-confidence contracts, and
-adaptation-gate contracts. Later Wave 1 commits will add human-reviewable
-handoff packages without weakening this package boundary.
+integrity contracts, reality-delta contracts, model-confidence contracts,
+adaptation-gate contracts, and human-review handoff contracts.
 """
 
 from ix_blackfox_worldtwin.adaptation import (
@@ -104,6 +103,19 @@ from ix_blackfox_worldtwin.examples import (
     build_resource_pressure_scenario,
     build_thermal_drift_scenario,
     get_wave1_example_scenarios,
+)
+from ix_blackfox_worldtwin.handoff import (
+    HANDOFF_ID_DIGEST_LENGTH,
+    HANDOFF_SCHEMA_VERSION,
+    HandoffArtifact,
+    HandoffDecision,
+    HandoffPackage,
+    HandoffReason,
+    HandoffReasonSeverity,
+    HandoffTarget,
+    create_handoff_package,
+    decide_handoff_from_reasons,
+    make_handoff_package_id,
 )
 from ix_blackfox_worldtwin.metadata import (
     CORE_DOCTRINE,
@@ -312,6 +324,8 @@ __all__ = [
     "GITHUB_DESCRIPTION",
     "GITHUB_DESCRIPTION_LIMIT",
     "GITHUB_TOPICS",
+    "HANDOFF_ID_DIGEST_LENGTH",
+    "HANDOFF_SCHEMA_VERSION",
     "LICENSE_NAME",
     "MODEL_CONFIDENCE_ID_DIGEST_LENGTH",
     "MODEL_CONFIDENCE_SCHEMA_VERSION",
@@ -376,6 +390,12 @@ __all__ = [
     "EvidenceAttribute",
     "EvidenceKind",
     "EvidenceReference",
+    "HandoffArtifact",
+    "HandoffDecision",
+    "HandoffPackage",
+    "HandoffReason",
+    "HandoffReasonSeverity",
+    "HandoffTarget",
     "MeasurableOutput",
     "ModelConfidenceObservation",
     "ModelConfidenceProfile",
@@ -450,6 +470,7 @@ __all__ = [
     "create_dimension_delta",
     "create_evidence_reference",
     "create_evidence_reference_from_hash",
+    "create_handoff_package",
     "create_model_confidence_observation",
     "create_model_confidence_profile",
     "create_observed_state",
@@ -466,6 +487,7 @@ __all__ = [
     "create_simulation_rule",
     "create_world_state",
     "decide_adaptation_from_reasons",
+    "decide_handoff_from_reasons",
     "ensure_scenario_manifest_replayable",
     "evaluate_adaptation_gate",
     "evaluate_worldtwin_policy",
@@ -491,6 +513,7 @@ __all__ = [
     "make_constraint_rule_id",
     "make_constraint_set_id",
     "make_evidence_id",
+    "make_handoff_package_id",
     "make_model_confidence_observation_id",
     "make_model_confidence_profile_id",
     "make_policy_evaluation_id",
