@@ -25,10 +25,10 @@ def test_validate_confidence_rejects_invalid_values() -> None:
     with pytest.raises(ValueError, match="confidence must be finite"):
         worldtwin.validate_confidence(float("nan"))
 
-    with pytest.raises(ValueError, match="confidence must be between 0.0 and 1.0"):
+    with pytest.raises(ValueError, match=r"confidence must be between 0\.0 and 1\.0"):
         worldtwin.validate_confidence(-0.01)
 
-    with pytest.raises(ValueError, match="confidence must be between 0.0 and 1.0"):
+    with pytest.raises(ValueError, match=r"confidence must be between 0\.0 and 1\.0"):
         worldtwin.validate_confidence(1.01)
 
 
