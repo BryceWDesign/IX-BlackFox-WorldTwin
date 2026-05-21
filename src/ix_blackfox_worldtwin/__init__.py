@@ -11,7 +11,8 @@ policy-evaluation contracts, deterministic simulation contracts, branching
 simulation contracts, risk-scoring contracts, reproducibility contracts,
 prediction-result contracts, prediction-receipt contracts, receipt-chain
 integrity contracts, reality-delta contracts, model-confidence contracts,
-adaptation-gate contracts, and human-review handoff contracts.
+adaptation-gate contracts, human-review handoff contracts, and BlackFox-facing
+review-bundle contracts.
 """
 
 from ix_blackfox_worldtwin.adaptation import (
@@ -224,6 +225,18 @@ from ix_blackfox_worldtwin.reproducibility import (
     make_reproducibility_check_id,
     make_reproducibility_manifest_id,
 )
+from ix_blackfox_worldtwin.review_bundle import (
+    REVIEW_BUNDLE_ID_DIGEST_LENGTH,
+    REVIEW_BUNDLE_SCHEMA_VERSION,
+    ReviewBundle,
+    ReviewBundleFormat,
+    ReviewBundleValidationResult,
+    ReviewBundleValidationStatus,
+    create_review_bundle,
+    make_review_bundle_id,
+    make_review_bundle_validation_id,
+    validate_review_bundle,
+)
 from ix_blackfox_worldtwin.risk import (
     RISK_ID_DIGEST_LENGTH,
     RISK_SCHEMA_VERSION,
@@ -347,6 +360,8 @@ __all__ = [
     "REPRODUCIBILITY_ID_DIGEST_LENGTH",
     "REPRODUCIBILITY_SCHEMA_VERSION",
     "RESEARCH_STATUS",
+    "REVIEW_BUNDLE_ID_DIGEST_LENGTH",
+    "REVIEW_BUNDLE_SCHEMA_VERSION",
     "RISK_ID_DIGEST_LENGTH",
     "RISK_SCHEMA_VERSION",
     "SCENARIO_ID_DIGEST_LENGTH",
@@ -425,6 +440,10 @@ __all__ = [
     "ReproducibilityManifest",
     "ReproducibilityStatus",
     "RequiredEvidence",
+    "ReviewBundle",
+    "ReviewBundleFormat",
+    "ReviewBundleValidationResult",
+    "ReviewBundleValidationStatus",
     "RiskComparison",
     "RiskFactor",
     "RiskProfile",
@@ -481,6 +500,7 @@ __all__ = [
     "create_reality_delta_confidence_observation",
     "create_reality_delta_report",
     "create_reproducibility_manifest",
+    "create_review_bundle",
     "create_risk_factor",
     "create_scenario_manifest",
     "create_simulated_state",
@@ -525,6 +545,8 @@ __all__ = [
     "make_receipt_chain_id",
     "make_reproducibility_check_id",
     "make_reproducibility_manifest_id",
+    "make_review_bundle_id",
+    "make_review_bundle_validation_id",
     "make_risk_comparison_id",
     "make_risk_factor_id",
     "make_risk_profile_id",
@@ -539,5 +561,6 @@ __all__ = [
     "update_model_confidence_from_reality_delta",
     "validate_confidence",
     "validate_receipt_chain",
+    "validate_review_bundle",
     "validate_scenario_manifest",
 ]
