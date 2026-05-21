@@ -7,10 +7,10 @@ The current public API exports stable project metadata, doctrine boundaries,
 typed world-state contracts, evidence reference contracts, uncertainty
 contracts, scenario manifest contracts, scenario validation gates, CI-safe
 example scenarios, assumption ledger contracts, constraint-engine contracts,
-policy-evaluation contracts, and deterministic simulation contracts. Later Wave
-1 commits will add branching predictions, receipts, reality-delta scoring,
-model-confidence tracking, adaptation gates, and human-reviewable handoff
-packages without weakening this package boundary.
+policy-evaluation contracts, deterministic simulation contracts, and branching
+simulation contracts. Later Wave 1 commits will add prediction receipts,
+reality-delta scoring, model-confidence tracking, adaptation gates, and
+human-reviewable handoff packages without weakening this package boundary.
 """
 
 from ix_blackfox_worldtwin.assumptions import (
@@ -26,6 +26,18 @@ from ix_blackfox_worldtwin.assumptions import (
     create_assumption_record,
     make_assumption_id,
     make_assumption_ledger_id,
+)
+from ix_blackfox_worldtwin.branching import (
+    BRANCH_ID_DIGEST_LENGTH,
+    BRANCHING_SCHEMA_VERSION,
+    BranchComparison,
+    BranchDefinition,
+    BranchRankingDirection,
+    BranchSimulationResult,
+    create_branch_definition,
+    make_branch_comparison_id,
+    make_branch_id,
+    run_branching_simulation,
 )
 from ix_blackfox_worldtwin.constraints import (
     CONSTRAINT_ID_DIGEST_LENGTH,
@@ -169,6 +181,8 @@ from ix_blackfox_worldtwin.uncertainty import (
 __all__ = [
     "ASSUMPTION_ID_DIGEST_LENGTH",
     "ASSUMPTION_SCHEMA_VERSION",
+    "BRANCHING_SCHEMA_VERSION",
+    "BRANCH_ID_DIGEST_LENGTH",
     "CANONICAL_DOCTRINE",
     "CLAIM_BOUNDARY_RULES",
     "CONFIDENCE_DIGEST_LENGTH",
@@ -211,6 +225,10 @@ __all__ = [
     "AssumptionLedger",
     "AssumptionRecord",
     "AssumptionStatus",
+    "BranchComparison",
+    "BranchDefinition",
+    "BranchRankingDirection",
+    "BranchSimulationResult",
     "ClaimBoundaryRule",
     "ClaimBoundaryViolation",
     "ConfidenceAssessment",
@@ -255,6 +273,7 @@ __all__ = [
     "combine_confidence_conservatively",
     "create_assumption_ledger",
     "create_assumption_record",
+    "create_branch_definition",
     "create_confidence_assessment",
     "create_constraint_rule",
     "create_constraint_set",
@@ -282,6 +301,8 @@ __all__ = [
     "is_prohibited_claim",
     "make_assumption_id",
     "make_assumption_ledger_id",
+    "make_branch_comparison_id",
+    "make_branch_id",
     "make_confidence_assessment_id",
     "make_constraint_rule_id",
     "make_constraint_set_id",
@@ -292,6 +313,7 @@ __all__ = [
     "make_simulation_rule_id",
     "make_state_id",
     "render_doctrine_summary",
+    "run_branching_simulation",
     "run_deterministic_simulation",
     "validate_confidence",
     "validate_scenario_manifest",
