@@ -213,7 +213,7 @@ class AssumptionLedger:
         )
         object.__setattr__(self, "owner", _require_non_empty(self.owner, "ledger owner"))
         object.__setattr__(self, "scenario_id", self.scenario_id.strip())
-        object.__setattr__(self, "notes", _normalize_text_tuple(self.notes, "ledger note"))
+        object.__setattr__(self, "notes", _normalize_unique_text_tuple(self.notes, "ledger note"))
         object.__setattr__(
             self,
             "schema_version",
@@ -254,9 +254,7 @@ class AssumptionLedger:
         """Return a deterministic payload for hashing and receipts."""
 
         return {
-            "assumptions": [
-                assumption.canonical_payload() for assumption in self.assumptions
-            ],
+            "assumptions": [assumption.canonical_payload() for assumption in self.assumptions],
             "created_at": self.created_at.isoformat(),
             "ledger_id": self.ledger_id,
             "notes": list(self.notes),
@@ -346,7 +344,7 @@ def create_assumption_ledger(
     normalized_created_at = _require_aware_utc_datetime(created_at, "ledger created_at")
     normalized_owner = _require_non_empty(owner, "ledger owner")
     normalized_scenario_id = scenario_id.strip()
-    normalized_notes = _normalize_text_tuple(notes, "ledger note")
+    normalized_notes = _normalize_unique_text_tuple(notes, "ledger note")
     resolved_ledger_id = ledger_id or make_assumption_ledger_id(
         assumptions=normalized_assumptions,
         created_at=normalized_created_at,
@@ -418,7 +416,7 @@ def make_assumption_ledger_id(
             for assumption in _normalize_assumption_records(assumptions)
         ],
         "created_at": _require_aware_utc_datetime(created_at, "ledger created_at").isoformat(),
-        "notes": list(_normalize_text_tuple(notes, "ledger note")),
+        "notes": list(_normalize_unique_text_tuple(notes, "ledger note")),
         "owner": _require_non_empty(owner, "ledger owner"),
         "scenario_id": scenario_id.strip(),
         "schema_version": ASSUMPTION_SCHEMA_VERSION,
@@ -454,9 +452,7 @@ def _canonical_assumption_payload(
         "impact_if_wrong": impact_if_wrong.value,
         "name": name,
         "owner": owner,
-        "required_evidence": [
-            evidence.canonical_payload() for evidence in required_evidence
-        ],
+        "required_evidence": [evidence.canonical_payload() for evidence in required_evidence],
         "schema_version": schema_version,
         "statement": statement,
         "status": status.value,
