@@ -223,7 +223,7 @@ def test_update_model_confidence_from_reality_delta_can_suspend_trust() -> None:
 
     assert bad_report.verdict is worldtwin.RealityDeltaVerdict.QUARANTINE
     assert profile.confidence_score == 0.55
-    assert updated.confidence_score == 0.050000000000000044
+    assert updated.confidence_score == pytest.approx(0.05)
     assert updated.trust_tier is worldtwin.ModelTrustTier.SUSPENDED
     assert updated.blocks_trust_increase is True
     assert updated.allows_adaptation_review is False
