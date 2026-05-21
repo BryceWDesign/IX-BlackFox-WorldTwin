@@ -9,9 +9,9 @@ from __future__ import annotations
 
 import argparse
 import json
-import sys
+from collections.abc import Sequence
 from datetime import UTC, datetime, timedelta
-from typing import NoReturn, Sequence
+from typing import NoReturn
 
 import ix_blackfox_worldtwin as worldtwin
 
