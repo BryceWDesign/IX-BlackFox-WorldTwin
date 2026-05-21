@@ -8,10 +8,10 @@ typed world-state contracts, evidence reference contracts, uncertainty
 contracts, scenario manifest contracts, scenario validation gates, CI-safe
 example scenarios, assumption ledger contracts, constraint-engine contracts,
 policy-evaluation contracts, deterministic simulation contracts, branching
-simulation contracts, and risk-scoring contracts. Later Wave 1 commits will add
-prediction receipts, reality-delta scoring, model-confidence tracking,
-adaptation gates, and human-reviewable handoff packages without weakening this
-package boundary.
+simulation contracts, risk-scoring contracts, and reproducibility contracts.
+Later Wave 1 commits will add prediction receipts, reality-delta scoring,
+model-confidence tracking, adaptation gates, and human-reviewable handoff
+packages without weakening this package boundary.
 """
 
 from ix_blackfox_worldtwin.assumptions import (
@@ -121,6 +121,18 @@ from ix_blackfox_worldtwin.policy import (
     evaluate_worldtwin_policy,
     make_policy_evaluation_id,
 )
+from ix_blackfox_worldtwin.reproducibility import (
+    REPRODUCIBILITY_ID_DIGEST_LENGTH,
+    REPRODUCIBILITY_SCHEMA_VERSION,
+    ReproducibilityArtifact,
+    ReproducibilityCheck,
+    ReproducibilityManifest,
+    ReproducibilityStatus,
+    check_reproducibility,
+    create_reproducibility_manifest,
+    make_reproducibility_check_id,
+    make_reproducibility_manifest_id,
+)
 from ix_blackfox_worldtwin.risk import (
     RISK_ID_DIGEST_LENGTH,
     RISK_SCHEMA_VERSION,
@@ -226,6 +238,8 @@ __all__ = [
     "PROJECT_NAME",
     "PUBLIC_DESCRIPTION",
     "REPOSITORY_URL",
+    "REPRODUCIBILITY_ID_DIGEST_LENGTH",
+    "REPRODUCIBILITY_SCHEMA_VERSION",
     "RESEARCH_STATUS",
     "RISK_ID_DIGEST_LENGTH",
     "RISK_SCHEMA_VERSION",
@@ -269,6 +283,10 @@ __all__ = [
     "PolicyEvaluation",
     "PolicyReason",
     "PolicyReasonSeverity",
+    "ReproducibilityArtifact",
+    "ReproducibilityCheck",
+    "ReproducibilityManifest",
+    "ReproducibilityStatus",
     "RequiredEvidence",
     "RiskComparison",
     "RiskFactor",
@@ -294,6 +312,7 @@ __all__ = [
     "WorldStateKind",
     "build_resource_pressure_scenario",
     "build_thermal_drift_scenario",
+    "check_reproducibility",
     "classify_confidence",
     "classify_risk_recommendation",
     "classify_risk_severity",
@@ -309,6 +328,7 @@ __all__ = [
     "create_evidence_reference_from_hash",
     "create_observed_state",
     "create_predicted_state",
+    "create_reproducibility_manifest",
     "create_risk_factor",
     "create_scenario_manifest",
     "create_simulated_state",
@@ -337,6 +357,8 @@ __all__ = [
     "make_constraint_set_id",
     "make_evidence_id",
     "make_policy_evaluation_id",
+    "make_reproducibility_check_id",
+    "make_reproducibility_manifest_id",
     "make_risk_comparison_id",
     "make_risk_factor_id",
     "make_risk_profile_id",
