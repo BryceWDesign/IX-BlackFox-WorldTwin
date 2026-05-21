@@ -344,7 +344,9 @@ def create_handoff_package(
         adaptation_gate_result_id=(
             "" if adaptation_gate_result is None else adaptation_gate_result.gate_result_id
         ),
-        reality_delta_report_id="" if reality_delta_report is None else reality_delta_report.report_id,
+        reality_delta_report_id=""
+        if reality_delta_report is None
+        else reality_delta_report.report_id,
         model_confidence_profile_id=(
             "" if model_confidence_profile is None else model_confidence_profile.profile_id
         ),
@@ -370,7 +372,9 @@ def create_handoff_package(
         adaptation_gate_result_id=(
             "" if adaptation_gate_result is None else adaptation_gate_result.gate_result_id
         ),
-        reality_delta_report_id="" if reality_delta_report is None else reality_delta_report.report_id,
+        reality_delta_report_id=""
+        if reality_delta_report is None
+        else reality_delta_report.report_id,
         model_confidence_profile_id=(
             "" if model_confidence_profile is None else model_confidence_profile.profile_id
         ),
@@ -416,8 +420,7 @@ def make_handoff_package_id(
         "adaptation_gate_result_id": adaptation_gate_result_id.strip(),
         "allowed_for_automatic_execution": False,
         "artifacts": [
-            artifact.canonical_payload()
-            for artifact in _normalize_handoff_artifacts(artifacts)
+            artifact.canonical_payload() for artifact in _normalize_handoff_artifacts(artifacts)
         ],
         "created_at": _require_aware_utc_datetime(created_at, "handoff created_at").isoformat(),
         "created_by": _require_non_empty(created_by, "created by"),
@@ -427,9 +430,7 @@ def make_handoff_package_id(
         "policy_evaluation_id": policy_evaluation_id.strip(),
         "prediction_id": _require_non_empty(prediction_id, "prediction id"),
         "reality_delta_report_id": reality_delta_report_id.strip(),
-        "reasons": [
-            reason.canonical_payload() for reason in _normalize_handoff_reasons(reasons)
-        ],
+        "reasons": [reason.canonical_payload() for reason in _normalize_handoff_reasons(reasons)],
         "receipt_chain_id": _require_non_empty(receipt_chain_id, "receipt chain id"),
         "receipt_id": _require_non_empty(receipt_id, "receipt id"),
         "requested_action": _require_non_empty(requested_action, "requested action"),
@@ -471,7 +472,10 @@ def _validate_core_linkage(
         and adaptation_gate_result.policy_evaluation_id != policy_evaluation.policy_evaluation_id
     ):
         raise ValueError("adaptation gate policy_evaluation_id must match policy evaluation id")
-    if reality_delta_report is not None and reality_delta_report.prediction_id != prediction.prediction_id:
+    if (
+        reality_delta_report is not None
+        and reality_delta_report.prediction_id != prediction.prediction_id
+    ):
         raise ValueError("reality-delta prediction_id must match prediction prediction_id")
 
 
@@ -551,8 +555,7 @@ def _build_handoff_reasons(
                 if model_confidence_profile.allows_adaptation_review
                 else HandoffReasonSeverity.ERROR,
                 message=(
-                    "Model-confidence profile tier is "
-                    f"{model_confidence_profile.trust_tier.value}."
+                    f"Model-confidence profile tier is {model_confidence_profile.trust_tier.value}."
                 ),
                 source=f"model-confidence:{model_confidence_profile.profile_id}",
             )
