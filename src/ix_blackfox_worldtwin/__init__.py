@@ -10,11 +10,26 @@ example scenarios, assumption ledger contracts, constraint-engine contracts,
 policy-evaluation contracts, deterministic simulation contracts, branching
 simulation contracts, risk-scoring contracts, reproducibility contracts,
 prediction-result contracts, prediction-receipt contracts, receipt-chain
-integrity contracts, reality-delta contracts, and model-confidence contracts.
-Later Wave 1 commits will add adaptation gates and human-reviewable handoff
-packages without weakening this package boundary.
+integrity contracts, reality-delta contracts, model-confidence contracts, and
+adaptation-gate contracts. Later Wave 1 commits will add human-reviewable
+handoff packages without weakening this package boundary.
 """
 
+from ix_blackfox_worldtwin.adaptation import (
+    ADAPTATION_GATE_ID_DIGEST_LENGTH,
+    ADAPTATION_SCHEMA_VERSION,
+    AdaptationCandidate,
+    AdaptationDecision,
+    AdaptationGateReason,
+    AdaptationGateResult,
+    AdaptationReasonSeverity,
+    AdaptationScope,
+    create_adaptation_candidate,
+    decide_adaptation_from_reasons,
+    evaluate_adaptation_gate,
+    make_adaptation_candidate_id,
+    make_adaptation_gate_result_id,
+)
 from ix_blackfox_worldtwin.assumptions import (
     ASSUMPTION_ID_DIGEST_LENGTH,
     ASSUMPTION_SCHEMA_VERSION,
@@ -273,6 +288,8 @@ from ix_blackfox_worldtwin.uncertainty import (
 )
 
 __all__ = [
+    "ADAPTATION_GATE_ID_DIGEST_LENGTH",
+    "ADAPTATION_SCHEMA_VERSION",
     "ASSUMPTION_ID_DIGEST_LENGTH",
     "ASSUMPTION_SCHEMA_VERSION",
     "BRANCHING_SCHEMA_VERSION",
@@ -329,6 +346,12 @@ __all__ = [
     "UNCERTAINTY_SCHEMA_VERSION",
     "VERSION",
     "WORLD_TWIN_FOUNDATIONAL_RULES",
+    "AdaptationCandidate",
+    "AdaptationDecision",
+    "AdaptationGateReason",
+    "AdaptationGateResult",
+    "AdaptationReasonSeverity",
+    "AdaptationScope",
     "AssumptionCategory",
     "AssumptionImpactLevel",
     "AssumptionLedger",
@@ -417,6 +440,7 @@ __all__ = [
     "classify_risk_severity",
     "combine_confidence_conservatively",
     "compare_branch_risks",
+    "create_adaptation_candidate",
     "create_assumption_ledger",
     "create_assumption_record",
     "create_branch_definition",
@@ -433,15 +457,17 @@ __all__ = [
     "create_prediction_receipt",
     "create_prediction_result",
     "create_receipt_chain",
+    "create_reality_delta_confidence_observation",
     "create_reality_delta_report",
     "create_reproducibility_manifest",
     "create_risk_factor",
     "create_scenario_manifest",
     "create_simulated_state",
     "create_simulation_rule",
-    "create_reality_delta_confidence_observation",
     "create_world_state",
+    "decide_adaptation_from_reasons",
     "ensure_scenario_manifest_replayable",
+    "evaluate_adaptation_gate",
     "evaluate_worldtwin_policy",
     "find_claim_boundary_violations",
     "get_claim_boundary_rules",
@@ -455,6 +481,8 @@ __all__ = [
     "hash_evidence_content",
     "is_claim_language_allowed",
     "is_prohibited_claim",
+    "make_adaptation_candidate_id",
+    "make_adaptation_gate_result_id",
     "make_assumption_id",
     "make_assumption_ledger_id",
     "make_branch_comparison_id",
