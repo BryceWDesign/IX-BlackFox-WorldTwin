@@ -269,9 +269,7 @@ class ConstraintEvaluationSet:
 
         return {
             "constraint_set_id": self.constraint_set_id,
-            "evaluations": [
-                evaluation.canonical_payload() for evaluation in self.evaluations
-            ],
+            "evaluations": [evaluation.canonical_payload() for evaluation in self.evaluations],
         }
 
     def fingerprint(self) -> str:
@@ -308,7 +306,9 @@ class ConstraintSet:
         )
         object.__setattr__(self, "owner", _require_non_empty(self.owner, "constraint set owner"))
         object.__setattr__(self, "scenario_id", self.scenario_id.strip())
-        object.__setattr__(self, "notes", _normalize_text_tuple(self.notes, "constraint note"))
+        object.__setattr__(
+            self, "notes", _normalize_unique_text_tuple(self.notes, "constraint note")
+        )
         object.__setattr__(
             self,
             "schema_version",
@@ -442,7 +442,7 @@ def create_constraint_set(
         "constraint set created_at",
     )
     normalized_owner = _require_non_empty(owner, "constraint set owner")
-    normalized_notes = _normalize_text_tuple(notes, "constraint note")
+    normalized_notes = _normalize_unique_text_tuple(notes, "constraint note")
     normalized_scenario_id = scenario_id.strip()
     resolved_constraint_set_id = constraint_set_id or make_constraint_set_id(
         rules=normalized_rules,
@@ -512,7 +512,7 @@ def make_constraint_set_id(
             created_at,
             "constraint set created_at",
         ).isoformat(),
-        "notes": list(_normalize_text_tuple(notes, "constraint note")),
+        "notes": list(_normalize_unique_text_tuple(notes, "constraint note")),
         "owner": _require_non_empty(owner, "constraint set owner"),
         "rules": [rule.canonical_payload() for rule in _normalize_constraint_rules(rules)],
         "scenario_id": scenario_id.strip(),
