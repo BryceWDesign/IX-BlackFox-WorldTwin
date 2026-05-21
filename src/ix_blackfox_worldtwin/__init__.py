@@ -9,8 +9,8 @@ contracts, scenario manifest contracts, scenario validation gates, CI-safe
 example scenarios, assumption ledger contracts, constraint-engine contracts,
 policy-evaluation contracts, deterministic simulation contracts, branching
 simulation contracts, risk-scoring contracts, reproducibility contracts,
-prediction-result contracts, and prediction-receipt contracts. Later Wave 1
-commits will add receipt-chain integrity, reality-delta scoring,
+prediction-result contracts, prediction-receipt contracts, and receipt-chain
+integrity contracts. Later Wave 1 commits will add reality-delta scoring,
 model-confidence tracking, adaptation gates, and human-reviewable handoff
 packages without weakening this package boundary.
 """
@@ -132,6 +132,21 @@ from ix_blackfox_worldtwin.prediction import (
     create_prediction_result,
     make_prediction_id,
 )
+from ix_blackfox_worldtwin.receipt_chain import (
+    GENESIS_PREVIOUS_ENTRY_HASH,
+    RECEIPT_CHAIN_ID_DIGEST_LENGTH,
+    RECEIPT_CHAIN_SCHEMA_VERSION,
+    ReceiptChain,
+    ReceiptChainEntry,
+    ReceiptChainValidationResult,
+    ReceiptChainValidationStatus,
+    append_receipt_to_chain,
+    create_receipt_chain,
+    make_receipt_chain_entry_hash,
+    make_receipt_chain_entry_id,
+    make_receipt_chain_id,
+    validate_receipt_chain,
+)
 from ix_blackfox_worldtwin.receipts import (
     RECEIPT_ID_DIGEST_LENGTH,
     RECEIPT_SCHEMA_VERSION,
@@ -247,6 +262,7 @@ __all__ = [
     "EXAMPLE_CREATED_AT",
     "EXAMPLE_CREATOR",
     "FOUNDATIONAL_LAW",
+    "GENESIS_PREVIOUS_ENTRY_HASH",
     "GITHUB_DESCRIPTION",
     "GITHUB_DESCRIPTION_LIMIT",
     "GITHUB_TOPICS",
@@ -259,6 +275,8 @@ __all__ = [
     "PROHIBITED_CLAIMS",
     "PROJECT_NAME",
     "PUBLIC_DESCRIPTION",
+    "RECEIPT_CHAIN_ID_DIGEST_LENGTH",
+    "RECEIPT_CHAIN_SCHEMA_VERSION",
     "RECEIPT_ID_DIGEST_LENGTH",
     "RECEIPT_SCHEMA_VERSION",
     "REPOSITORY_URL",
@@ -313,6 +331,10 @@ __all__ = [
     "PredictionResult",
     "PredictionSourceKind",
     "ReceiptArtifact",
+    "ReceiptChain",
+    "ReceiptChainEntry",
+    "ReceiptChainValidationResult",
+    "ReceiptChainValidationStatus",
     "ReceiptReviewDecision",
     "ReproducibilityArtifact",
     "ReproducibilityCheck",
@@ -341,6 +363,7 @@ __all__ = [
     "UncertaintySource",
     "WorldState",
     "WorldStateKind",
+    "append_receipt_to_chain",
     "build_resource_pressure_scenario",
     "build_thermal_drift_scenario",
     "check_reproducibility",
@@ -361,6 +384,7 @@ __all__ = [
     "create_predicted_state",
     "create_prediction_receipt",
     "create_prediction_result",
+    "create_receipt_chain",
     "create_reproducibility_manifest",
     "create_risk_factor",
     "create_scenario_manifest",
@@ -392,6 +416,9 @@ __all__ = [
     "make_policy_evaluation_id",
     "make_prediction_id",
     "make_prediction_receipt_id",
+    "make_receipt_chain_entry_hash",
+    "make_receipt_chain_entry_id",
+    "make_receipt_chain_id",
     "make_reproducibility_check_id",
     "make_reproducibility_manifest_id",
     "make_risk_comparison_id",
@@ -406,5 +433,6 @@ __all__ = [
     "run_deterministic_simulation",
     "score_branch_risk",
     "validate_confidence",
+    "validate_receipt_chain",
     "validate_scenario_manifest",
 ]
