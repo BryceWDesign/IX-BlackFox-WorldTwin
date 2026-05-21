@@ -6,10 +6,10 @@ for AI-agent decisions.
 The current public API exports stable project metadata, doctrine boundaries,
 typed world-state contracts, evidence reference contracts, uncertainty
 contracts, scenario manifest contracts, scenario validation gates, CI-safe
-example scenarios, and assumption ledger contracts. Later Wave 1 commits will
-add constraint checks, deterministic simulation, branching predictions, receipts,
-reality-delta scoring, model-confidence tracking, adaptation gates, and
-human-reviewable handoff packages without weakening this package boundary.
+example scenarios, assumption ledger contracts, and constraint-engine contracts.
+Later Wave 1 commits will add deterministic simulation, branching predictions,
+receipts, reality-delta scoring, model-confidence tracking, adaptation gates,
+and human-reviewable handoff packages without weakening this package boundary.
 """
 
 from ix_blackfox_worldtwin.assumptions import (
@@ -25,6 +25,21 @@ from ix_blackfox_worldtwin.assumptions import (
     create_assumption_record,
     make_assumption_id,
     make_assumption_ledger_id,
+)
+from ix_blackfox_worldtwin.constraints import (
+    CONSTRAINT_ID_DIGEST_LENGTH,
+    CONSTRAINT_SCHEMA_VERSION,
+    ConstraintDecision,
+    ConstraintEvaluation,
+    ConstraintEvaluationSet,
+    ConstraintOperator,
+    ConstraintRule,
+    ConstraintSet,
+    ConstraintSeverity,
+    create_constraint_rule,
+    create_constraint_set,
+    make_constraint_rule_id,
+    make_constraint_set_id,
 )
 from ix_blackfox_worldtwin.doctrine import (
     CANONICAL_DOCTRINE,
@@ -137,6 +152,8 @@ __all__ = [
     "CONFIDENCE_DIGEST_LENGTH",
     "CONFIDENCE_MAX",
     "CONFIDENCE_MIN",
+    "CONSTRAINT_ID_DIGEST_LENGTH",
+    "CONSTRAINT_SCHEMA_VERSION",
     "CORE_DOCTRINE",
     "DESCRIPTION_FORBIDDEN_TERMS",
     "EVIDENCE_ID_DIGEST_LENGTH",
@@ -172,6 +189,13 @@ __all__ = [
     "ClaimBoundaryViolation",
     "ConfidenceAssessment",
     "ConfidenceTier",
+    "ConstraintDecision",
+    "ConstraintEvaluation",
+    "ConstraintEvaluationSet",
+    "ConstraintOperator",
+    "ConstraintRule",
+    "ConstraintSet",
+    "ConstraintSeverity",
     "EvidenceAttribute",
     "EvidenceKind",
     "EvidenceReference",
@@ -199,6 +223,8 @@ __all__ = [
     "create_assumption_ledger",
     "create_assumption_record",
     "create_confidence_assessment",
+    "create_constraint_rule",
+    "create_constraint_set",
     "create_evidence_reference",
     "create_evidence_reference_from_hash",
     "create_observed_state",
@@ -222,6 +248,8 @@ __all__ = [
     "make_assumption_id",
     "make_assumption_ledger_id",
     "make_confidence_assessment_id",
+    "make_constraint_rule_id",
+    "make_constraint_set_id",
     "make_evidence_id",
     "make_scenario_id",
     "make_state_id",
