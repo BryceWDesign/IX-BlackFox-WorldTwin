@@ -6,9 +6,9 @@ for AI-agent decisions.
 The current public API exports stable project metadata, doctrine boundaries,
 typed world-state contracts, evidence reference contracts, uncertainty
 contracts, scenario manifest contracts, scenario validation gates, CI-safe
-example scenarios, assumption ledger contracts, constraint-engine contracts, and
-policy-evaluation contracts. Later Wave 1 commits will add deterministic
-simulation, branching predictions, receipts, reality-delta scoring,
+example scenarios, assumption ledger contracts, constraint-engine contracts,
+policy-evaluation contracts, and deterministic simulation contracts. Later Wave
+1 commits will add branching predictions, receipts, reality-delta scoring,
 model-confidence tracking, adaptation gates, and human-reviewable handoff
 packages without weakening this package boundary.
 """
@@ -127,6 +127,17 @@ from ix_blackfox_worldtwin.scenario_validation import (
     ensure_scenario_manifest_replayable,
     validate_scenario_manifest,
 )
+from ix_blackfox_worldtwin.simulation import (
+    SIMULATION_ID_DIGEST_LENGTH,
+    SIMULATION_SCHEMA_VERSION,
+    SimulationConfig,
+    SimulationResult,
+    SimulationRule,
+    create_simulation_rule,
+    make_simulation_id,
+    make_simulation_rule_id,
+    run_deterministic_simulation,
+)
 from ix_blackfox_worldtwin.state import (
     STATE_ID_DIGEST_LENGTH,
     STATE_SCHEMA_VERSION,
@@ -187,6 +198,8 @@ __all__ = [
     "SCENARIO_ID_DIGEST_LENGTH",
     "SCENARIO_SCHEMA_VERSION",
     "SHA256_HEX_LENGTH",
+    "SIMULATION_ID_DIGEST_LENGTH",
+    "SIMULATION_SCHEMA_VERSION",
     "STATE_ID_DIGEST_LENGTH",
     "STATE_SCHEMA_VERSION",
     "TRIAD_ROLES",
@@ -227,6 +240,9 @@ __all__ = [
     "ScenarioValidationSeverity",
     "ScenarioVariable",
     "ScenarioVariableKind",
+    "SimulationConfig",
+    "SimulationResult",
+    "SimulationRule",
     "StateDimension",
     "SystemRole",
     "UncertaintyBand",
@@ -248,6 +264,7 @@ __all__ = [
     "create_predicted_state",
     "create_scenario_manifest",
     "create_simulated_state",
+    "create_simulation_rule",
     "create_world_state",
     "ensure_scenario_manifest_replayable",
     "evaluate_worldtwin_policy",
@@ -271,8 +288,11 @@ __all__ = [
     "make_evidence_id",
     "make_policy_evaluation_id",
     "make_scenario_id",
+    "make_simulation_id",
+    "make_simulation_rule_id",
     "make_state_id",
     "render_doctrine_summary",
+    "run_deterministic_simulation",
     "validate_confidence",
     "validate_scenario_manifest",
 ]
