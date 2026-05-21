@@ -3,11 +3,12 @@
 IX-BlackFox-WorldTwin is a source-available governed world-model evidence layer
 for AI-agent decisions.
 
-The current public API exports stable project metadata and doctrine boundaries.
-Later Wave 1 commits will add scenario manifests, assumption ledgers, constraint
-checks, deterministic simulation, branching predictions, receipts,
-reality-delta scoring, model-confidence tracking, adaptation gates, and
-human-reviewable handoff packages without weakening this package boundary.
+The current public API exports stable project metadata, doctrine boundaries, and
+typed world-state contracts. Later Wave 1 commits will add scenario manifests,
+assumption ledgers, constraint checks, deterministic simulation, branching
+predictions, receipts, reality-delta scoring, model-confidence tracking,
+adaptation gates, and human-reviewable handoff packages without weakening this
+package boundary.
 """
 
 from ix_blackfox_worldtwin.doctrine import (
@@ -47,6 +48,18 @@ from ix_blackfox_worldtwin.metadata import (
     get_package_identity,
     is_prohibited_claim,
 )
+from ix_blackfox_worldtwin.state import (
+    STATE_ID_DIGEST_LENGTH,
+    STATE_SCHEMA_VERSION,
+    StateDimension,
+    WorldState,
+    WorldStateKind,
+    create_observed_state,
+    create_predicted_state,
+    create_simulated_state,
+    create_world_state,
+    make_state_id,
+)
 
 __all__ = [
     "CANONICAL_DOCTRINE",
@@ -64,13 +77,22 @@ __all__ = [
     "PUBLIC_DESCRIPTION",
     "REPOSITORY_URL",
     "RESEARCH_STATUS",
+    "STATE_ID_DIGEST_LENGTH",
+    "STATE_SCHEMA_VERSION",
     "TRIAD_ROLES",
     "VERSION",
     "WORLD_TWIN_FOUNDATIONAL_RULES",
     "ClaimBoundaryRule",
     "ClaimBoundaryViolation",
     "PackageIdentity",
+    "StateDimension",
     "SystemRole",
+    "WorldState",
+    "WorldStateKind",
+    "create_observed_state",
+    "create_predicted_state",
+    "create_simulated_state",
+    "create_world_state",
     "find_claim_boundary_violations",
     "get_claim_boundary_rules",
     "get_external_description_issues",
@@ -81,5 +103,6 @@ __all__ = [
     "get_worldtwin_foundational_rules",
     "is_claim_language_allowed",
     "is_prohibited_claim",
+    "make_state_id",
     "render_doctrine_summary",
 ]
