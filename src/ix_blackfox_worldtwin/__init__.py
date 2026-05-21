@@ -7,10 +7,11 @@ The current public API exports stable project metadata, doctrine boundaries,
 typed world-state contracts, evidence reference contracts, uncertainty
 contracts, scenario manifest contracts, scenario validation gates, CI-safe
 example scenarios, assumption ledger contracts, constraint-engine contracts,
-policy-evaluation contracts, deterministic simulation contracts, and branching
-simulation contracts. Later Wave 1 commits will add prediction receipts,
-reality-delta scoring, model-confidence tracking, adaptation gates, and
-human-reviewable handoff packages without weakening this package boundary.
+policy-evaluation contracts, deterministic simulation contracts, branching
+simulation contracts, and risk-scoring contracts. Later Wave 1 commits will add
+prediction receipts, reality-delta scoring, model-confidence tracking,
+adaptation gates, and human-reviewable handoff packages without weakening this
+package boundary.
 """
 
 from ix_blackfox_worldtwin.assumptions import (
@@ -120,6 +121,23 @@ from ix_blackfox_worldtwin.policy import (
     evaluate_worldtwin_policy,
     make_policy_evaluation_id,
 )
+from ix_blackfox_worldtwin.risk import (
+    RISK_ID_DIGEST_LENGTH,
+    RISK_SCHEMA_VERSION,
+    RiskComparison,
+    RiskFactor,
+    RiskProfile,
+    RiskRecommendation,
+    RiskSeverity,
+    classify_risk_recommendation,
+    classify_risk_severity,
+    compare_branch_risks,
+    create_risk_factor,
+    make_risk_comparison_id,
+    make_risk_factor_id,
+    make_risk_profile_id,
+    score_branch_risk,
+)
 from ix_blackfox_worldtwin.scenario import (
     SCENARIO_ID_DIGEST_LENGTH,
     SCENARIO_SCHEMA_VERSION,
@@ -209,6 +227,8 @@ __all__ = [
     "PUBLIC_DESCRIPTION",
     "REPOSITORY_URL",
     "RESEARCH_STATUS",
+    "RISK_ID_DIGEST_LENGTH",
+    "RISK_SCHEMA_VERSION",
     "SCENARIO_ID_DIGEST_LENGTH",
     "SCENARIO_SCHEMA_VERSION",
     "SHA256_HEX_LENGTH",
@@ -250,6 +270,11 @@ __all__ = [
     "PolicyReason",
     "PolicyReasonSeverity",
     "RequiredEvidence",
+    "RiskComparison",
+    "RiskFactor",
+    "RiskProfile",
+    "RiskRecommendation",
+    "RiskSeverity",
     "ScenarioBoundary",
     "ScenarioBoundaryKind",
     "ScenarioManifest",
@@ -270,7 +295,10 @@ __all__ = [
     "build_resource_pressure_scenario",
     "build_thermal_drift_scenario",
     "classify_confidence",
+    "classify_risk_recommendation",
+    "classify_risk_severity",
     "combine_confidence_conservatively",
+    "compare_branch_risks",
     "create_assumption_ledger",
     "create_assumption_record",
     "create_branch_definition",
@@ -281,6 +309,7 @@ __all__ = [
     "create_evidence_reference_from_hash",
     "create_observed_state",
     "create_predicted_state",
+    "create_risk_factor",
     "create_scenario_manifest",
     "create_simulated_state",
     "create_simulation_rule",
@@ -308,6 +337,9 @@ __all__ = [
     "make_constraint_set_id",
     "make_evidence_id",
     "make_policy_evaluation_id",
+    "make_risk_comparison_id",
+    "make_risk_factor_id",
+    "make_risk_profile_id",
     "make_scenario_id",
     "make_simulation_id",
     "make_simulation_rule_id",
@@ -315,6 +347,7 @@ __all__ = [
     "render_doctrine_summary",
     "run_branching_simulation",
     "run_deterministic_simulation",
+    "score_branch_risk",
     "validate_confidence",
     "validate_scenario_manifest",
 ]
