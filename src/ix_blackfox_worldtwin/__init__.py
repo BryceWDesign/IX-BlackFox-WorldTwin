@@ -3,12 +3,12 @@
 IX-BlackFox-WorldTwin is a source-available governed world-model evidence layer
 for AI-agent decisions.
 
-The current public API exports stable project metadata, doctrine boundaries, and
-typed world-state contracts. Later Wave 1 commits will add scenario manifests,
-assumption ledgers, constraint checks, deterministic simulation, branching
-predictions, receipts, reality-delta scoring, model-confidence tracking,
-adaptation gates, and human-reviewable handoff packages without weakening this
-package boundary.
+The current public API exports stable project metadata, doctrine boundaries,
+typed world-state contracts, and evidence reference contracts. Later Wave 1
+commits will add scenario manifests, assumption ledgers, constraint checks,
+deterministic simulation, branching predictions, receipts, reality-delta
+scoring, model-confidence tracking, adaptation gates, and human-reviewable
+handoff packages without weakening this package boundary.
 """
 
 from ix_blackfox_worldtwin.doctrine import (
@@ -25,6 +25,18 @@ from ix_blackfox_worldtwin.doctrine import (
     get_worldtwin_foundational_rules,
     is_claim_language_allowed,
     render_doctrine_summary,
+)
+from ix_blackfox_worldtwin.evidence import (
+    EVIDENCE_ID_DIGEST_LENGTH,
+    EVIDENCE_SCHEMA_VERSION,
+    SHA256_HEX_LENGTH,
+    EvidenceAttribute,
+    EvidenceKind,
+    EvidenceReference,
+    create_evidence_reference,
+    create_evidence_reference_from_hash,
+    hash_evidence_content,
+    make_evidence_id,
 )
 from ix_blackfox_worldtwin.metadata import (
     CORE_DOCTRINE,
@@ -66,6 +78,8 @@ __all__ = [
     "CLAIM_BOUNDARY_RULES",
     "CORE_DOCTRINE",
     "DESCRIPTION_FORBIDDEN_TERMS",
+    "EVIDENCE_ID_DIGEST_LENGTH",
+    "EVIDENCE_SCHEMA_VERSION",
     "FOUNDATIONAL_LAW",
     "GITHUB_DESCRIPTION",
     "GITHUB_DESCRIPTION_LIMIT",
@@ -77,6 +91,7 @@ __all__ = [
     "PUBLIC_DESCRIPTION",
     "REPOSITORY_URL",
     "RESEARCH_STATUS",
+    "SHA256_HEX_LENGTH",
     "STATE_ID_DIGEST_LENGTH",
     "STATE_SCHEMA_VERSION",
     "TRIAD_ROLES",
@@ -84,11 +99,16 @@ __all__ = [
     "WORLD_TWIN_FOUNDATIONAL_RULES",
     "ClaimBoundaryRule",
     "ClaimBoundaryViolation",
+    "EvidenceAttribute",
+    "EvidenceKind",
+    "EvidenceReference",
     "PackageIdentity",
     "StateDimension",
     "SystemRole",
     "WorldState",
     "WorldStateKind",
+    "create_evidence_reference",
+    "create_evidence_reference_from_hash",
     "create_observed_state",
     "create_predicted_state",
     "create_simulated_state",
@@ -101,8 +121,10 @@ __all__ = [
     "get_package_identity",
     "get_triad_roles",
     "get_worldtwin_foundational_rules",
+    "hash_evidence_content",
     "is_claim_language_allowed",
     "is_prohibited_claim",
+    "make_evidence_id",
     "make_state_id",
     "render_doctrine_summary",
 ]
