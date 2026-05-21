@@ -330,9 +330,7 @@ def create_reality_delta_report(
     predicted_dimensions = {
         dimension.name: dimension for dimension in prediction.final_state.dimensions
     }
-    observed_dimensions = {
-        dimension.name: dimension for dimension in observed_state.dimensions
-    }
+    observed_dimensions = {dimension.name: dimension for dimension in observed_state.dimensions}
     scored_names = tuple(normalized_tolerances)
     missing_predicted = tuple(
         sorted(name for name in scored_names if name not in predicted_dimensions)
@@ -456,9 +454,7 @@ def make_reality_delta_report_id(
             "reality-delta created_at",
         ).isoformat(),
         "created_by": _require_non_empty(created_by, "created by"),
-        "deltas": [
-            delta.canonical_payload() for delta in _normalize_dimension_deltas(deltas)
-        ],
+        "deltas": [delta.canonical_payload() for delta in _normalize_dimension_deltas(deltas)],
         "missing_observed_dimensions": list(
             _normalize_unique_text_tuple(
                 missing_observed_dimensions,
