@@ -182,7 +182,9 @@ class ReproducibilityCheck:
             else ReproducibilityStatus.FAIL
         )
         if self.status is not expected_status:
-            raise ValueError("reproducibility status must match mismatch and missing-artifact state")
+            raise ValueError(
+                "reproducibility status must match mismatch and missing-artifact state"
+            )
 
     @property
     def passed(self) -> bool:
@@ -307,7 +309,9 @@ def check_reproducibility(
         for artifact in _normalize_artifacts(current_artifacts)
     }
 
-    missing_artifacts = tuple(sorted(artifact_id for artifact_id in expected if artifact_id not in current))
+    missing_artifacts = tuple(
+        sorted(artifact_id for artifact_id in expected if artifact_id not in current)
+    )
     mismatches = tuple(
         sorted(
             artifact_id
@@ -354,9 +358,7 @@ def make_reproducibility_manifest_id(
     """Create a deterministic reproducibility manifest id."""
 
     payload = {
-        "artifacts": [
-            artifact.canonical_payload() for artifact in _normalize_artifacts(artifacts)
-        ],
+        "artifacts": [artifact.canonical_payload() for artifact in _normalize_artifacts(artifacts)],
         "created_at": _require_aware_utc_datetime(
             created_at,
             "manifest created_at",
