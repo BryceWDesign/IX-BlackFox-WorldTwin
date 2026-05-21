@@ -541,10 +541,16 @@ def _evaluate_operator(
     if operator is ConstraintOperator.EQUAL:
         return limit_value is not None and math.isclose(value, limit_value)
     if operator is ConstraintOperator.BETWEEN_INCLUSIVE:
-        return lower_bound is not None and upper_bound is not None and lower_bound <= value <= upper_bound
+        return (
+            lower_bound is not None
+            and upper_bound is not None
+            and lower_bound <= value <= upper_bound
+        )
     if operator is ConstraintOperator.OUTSIDE_INCLUSIVE:
-        return lower_bound is not None and upper_bound is not None and (
-            value <= lower_bound or value >= upper_bound
+        return (
+            lower_bound is not None
+            and upper_bound is not None
+            and (value <= lower_bound or value >= upper_bound)
         )
     raise ValueError(f"unsupported constraint operator: {operator}")
 
