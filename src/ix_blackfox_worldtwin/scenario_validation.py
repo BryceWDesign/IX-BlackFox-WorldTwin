@@ -105,7 +105,10 @@ def validate_scenario_manifest(scenario: ScenarioManifest) -> ScenarioValidation
                 severity=ScenarioValidationSeverity.ERROR,
                 code="initial-state-not-observed",
                 field="initial_state.kind",
-                message="Scenario initial state must be observed reality, not simulated or predicted state.",
+                message=(
+                    "Scenario initial state must be observed reality, not "
+                    "simulated or predicted state."
+                ),
             )
         )
 
@@ -115,7 +118,9 @@ def validate_scenario_manifest(scenario: ScenarioManifest) -> ScenarioValidation
                 severity=ScenarioValidationSeverity.ERROR,
                 code="replay-not-required",
                 field="replay_required",
-                message="Scenario replay must be required so prediction evidence can be reproduced.",
+                message=(
+                    "Scenario replay must be required so prediction evidence can be reproduced."
+                ),
             )
         )
 
@@ -125,7 +130,9 @@ def validate_scenario_manifest(scenario: ScenarioManifest) -> ScenarioValidation
                 severity=ScenarioValidationSeverity.WARNING,
                 code="purpose-too-short",
                 field="purpose",
-                message="Scenario purpose is short; reviewers may not understand what is being tested.",
+                message=(
+                    "Scenario purpose is short; reviewers may not understand what is being tested."
+                ),
             )
         )
 
@@ -136,7 +143,9 @@ def validate_scenario_manifest(scenario: ScenarioManifest) -> ScenarioValidation
                 severity=ScenarioValidationSeverity.ERROR,
                 code="missing-human-review-boundary",
                 field="boundaries",
-                message="Scenario must declare a human-review boundary before it can produce evidence.",
+                message=(
+                    "Scenario must declare a human-review boundary before it can produce evidence."
+                ),
             )
         )
 
@@ -150,7 +159,10 @@ def validate_scenario_manifest(scenario: ScenarioManifest) -> ScenarioValidation
             )
         )
 
-    if ScenarioBoundaryKind.SAFETY not in boundary_kinds and ScenarioBoundaryKind.POLICY not in boundary_kinds:
+    if (
+        ScenarioBoundaryKind.SAFETY not in boundary_kinds
+        and ScenarioBoundaryKind.POLICY not in boundary_kinds
+    ):
         issues.append(
             _issue(
                 severity=ScenarioValidationSeverity.WARNING,
