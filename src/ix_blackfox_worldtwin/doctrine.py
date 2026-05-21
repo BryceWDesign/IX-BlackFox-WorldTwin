@@ -79,25 +79,37 @@ CLAIM_BOUNDARY_RULES = (
     ClaimBoundaryRule(
         rule_id="no-agi-claim",
         phrase="AGI",
-        reason="The project is a governed simulation evidence kernel, not artificial general intelligence.",
+        reason=(
+            "The project is a governed simulation evidence kernel, not artificial "
+            "general intelligence."
+        ),
         safer_language="governed world-model evidence layer",
     ),
     ClaimBoundaryRule(
         rule_id="no-autonomous-authority",
         phrase="autonomous authority",
-        reason="The project produces reviewable evidence and must not imply authority to act alone.",
+        reason=(
+            "The project produces reviewable evidence and must not imply authority "
+            "to act alone."
+        ),
         safer_language="human-reviewable execution evidence",
     ),
     ClaimBoundaryRule(
         rule_id="no-production-readiness",
         phrase="production-ready",
-        reason="The project is a research prototype and has not been validated for production deployment.",
+        reason=(
+            "The project is a research prototype and has not been validated for "
+            "production deployment."
+        ),
         safer_language="research prototype",
     ),
     ClaimBoundaryRule(
         rule_id="no-certification",
         phrase="certified",
-        reason="The project has not been certified by a safety, security, compliance, or government body.",
+        reason=(
+            "The project has not been certified by a safety, security, compliance, "
+            "or government body."
+        ),
         safer_language="tested prototype evidence",
     ),
     ClaimBoundaryRule(
