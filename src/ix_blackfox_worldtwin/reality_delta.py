@@ -310,7 +310,12 @@ def create_reality_delta_report(
     notes: tuple[str, ...] = (),
     report_id: str | None = None,
 ) -> RealityDeltaReport:
-    """Compare a prediction result against later observed reality."""
+    """Compare a prediction result against later observed reality.
+
+    The tolerance map defines which dimensions are scored. Extra predicted or
+    observed dimensions are preserved in state artifacts but do not become
+    missing-dimension failures unless a tolerance explicitly asks to score them.
+    """
 
     if observed_state.kind is not WorldStateKind.OBSERVED:
         raise ValueError("reality-delta observed_state must be observed reality")
@@ -328,15 +333,23 @@ def create_reality_delta_report(
     observed_dimensions = {
         dimension.name: dimension for dimension in observed_state.dimensions
     }
-    compared_names = tuple(sorted(set(predicted_dimensions) & set(observed_dimensions)))
-    missing_predicted = tuple(sorted(set(observed_dimensions) - set(predicted_dimensions)))
-    missing_observed = tuple(sorted(set(predicted_dimensions) - set(observed_dimensions)))
+    scored_names = tuple(normalized_tolerances)
+    missing_predicted = tuple(
+        sorted(name for name in scored_names if name not in predicted_dimensions)
+    )
+    missing_observed = tuple(
+        sorted(name for name in scored_names if name not in observed_dimensions)
+    )
+    compared_names = tuple(
+        sorted(
+            name
+            for name in scored_names
+            if name in predicted_dimensions and name in observed_dimensions
+        )
+    )
 
     deltas: list[DimensionDelta] = []
     for name in compared_names:
-        if name not in normalized_tolerances:
-            raise ValueError(f"missing reality-delta tolerance for dimension: {name}")
-
         predicted_dimension = predicted_dimensions[name]
         observed_dimension = observed_dimensions[name]
         deltas.append(
