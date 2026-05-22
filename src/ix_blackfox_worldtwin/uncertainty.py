@@ -177,9 +177,7 @@ class ConfidenceAssessment:
             "schema_version": self.schema_version,
             "target_id": self.target_id,
             "tier": self.tier.value,
-            "uncertainty_bands": [
-                band.canonical_payload() for band in self.uncertainty_bands
-            ],
+            "uncertainty_bands": [band.canonical_payload() for band in self.uncertainty_bands],
         }
 
     def fingerprint(self) -> str:
@@ -259,8 +257,7 @@ def make_confidence_assessment_id(
         "schema_version": UNCERTAINTY_SCHEMA_VERSION,
         "target_id": _require_non_empty(target_id, "target id"),
         "uncertainty_bands": [
-            band.canonical_payload()
-            for band in _normalize_uncertainty_bands(uncertainty_bands)
+            band.canonical_payload() for band in _normalize_uncertainty_bands(uncertainty_bands)
         ],
     }
     digest = _stable_sha256(payload)[:CONFIDENCE_DIGEST_LENGTH]
