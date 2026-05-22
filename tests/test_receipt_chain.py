@@ -203,9 +203,7 @@ def test_receipt_chain_validation_detects_tampered_entry_hash() -> None:
     )
 
     assert validation.status is worldtwin.ReceiptChainValidationStatus.FAIL
-    assert validation.issues == (
-        f"entry {tampered_entry.entry_id} has invalid entry_hash",
-    )
+    assert validation.issues == (f"entry {tampered_entry.entry_id} has invalid entry_hash",)
 
 
 def test_receipt_chain_fingerprint_is_replay_stable() -> None:
