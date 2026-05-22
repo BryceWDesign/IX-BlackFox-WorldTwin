@@ -108,18 +108,12 @@ def test_dimension_delta_classifies_clean_match() -> None:
 
 
 def test_reality_delta_severity_thresholds_are_conservative() -> None:
-    assert worldtwin.classify_reality_delta_severity(0.0) is (
-        worldtwin.RealityDeltaSeverity.INFO
-    )
-    assert worldtwin.classify_reality_delta_severity(1.0) is (
-        worldtwin.RealityDeltaSeverity.INFO
-    )
+    assert worldtwin.classify_reality_delta_severity(0.0) is (worldtwin.RealityDeltaSeverity.INFO)
+    assert worldtwin.classify_reality_delta_severity(1.0) is (worldtwin.RealityDeltaSeverity.INFO)
     assert worldtwin.classify_reality_delta_severity(1.01) is (
         worldtwin.RealityDeltaSeverity.WARNING
     )
-    assert worldtwin.classify_reality_delta_severity(2.0) is (
-        worldtwin.RealityDeltaSeverity.ERROR
-    )
+    assert worldtwin.classify_reality_delta_severity(2.0) is (worldtwin.RealityDeltaSeverity.ERROR)
     assert worldtwin.classify_reality_delta_severity(5.0) is (
         worldtwin.RealityDeltaSeverity.CRITICAL
     )
