@@ -184,7 +184,9 @@ def test_simulation_rejects_duplicate_targets() -> None:
 
 
 def test_simulation_rule_rejects_invalid_bounds() -> None:
-    with pytest.raises(ValueError, match="simulation minimum must be less than or equal to maximum"):
+    with pytest.raises(
+        ValueError, match="simulation minimum must be less than or equal to maximum"
+    ):
         worldtwin.create_simulation_rule(
             target="temperature",
             delta_per_step=1.0,
