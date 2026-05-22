@@ -439,9 +439,7 @@ def _artifact_ids_from_handoff_payload(payload: dict[str, Any]) -> tuple[str, ..
     for artifact in artifacts:
         if not isinstance(artifact, dict):
             raise ValueError("handoff payload artifact must be an object")
-        artifact_ids.append(
-            _require_non_empty(str(artifact.get("artifact_id", "")), "artifact id")
-        )
+        artifact_ids.append(_require_non_empty(str(artifact.get("artifact_id", "")), "artifact id"))
 
     return _normalize_unique_text_tuple(tuple(artifact_ids), "artifact id")
 
