@@ -221,7 +221,9 @@ def test_branch_comparison_rejects_mismatched_scenario_id_when_constructed_direc
         created_by="worldtwin-test-suite",
     )
 
-    with pytest.raises(ValueError, match="branch comparison scenario_id must match result scenario id"):
+    with pytest.raises(
+        ValueError, match="branch comparison scenario_id must match result scenario id"
+    ):
         worldtwin.BranchComparison(
             comparison_id="branch-comparison-manual",
             scenario_id="scenario-other",
