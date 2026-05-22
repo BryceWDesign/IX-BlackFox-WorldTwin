@@ -6,7 +6,6 @@ import pytest
 
 import ix_blackfox_worldtwin as worldtwin
 
-
 MODEL_ID = "deterministic-kernel-v1"
 
 
@@ -195,9 +194,9 @@ def _policy_allow() -> worldtwin.PolicyEvaluation:
     )
 
 
-def _candidate(evidence_ids: tuple[str, ...] = ("evidence-adaptation-alpha",)) -> (
-    worldtwin.AdaptationCandidate
-):
+def _candidate(
+    evidence_ids: tuple[str, ...] = ("evidence-adaptation-alpha",),
+) -> worldtwin.AdaptationCandidate:
     prediction = _prediction()
     return worldtwin.create_adaptation_candidate(
         model_id=MODEL_ID,
@@ -376,7 +375,9 @@ def test_adaptation_gate_rejects_model_id_mismatch() -> None:
         created_by="worldtwin-confidence-ledger",
     )
 
-    with pytest.raises(ValueError, match="candidate model_id must match confidence profile model_id"):
+    with pytest.raises(
+        ValueError, match="candidate model_id must match confidence profile model_id"
+    ):
         worldtwin.evaluate_adaptation_gate(
             candidate=_candidate(),
             confidence_profile=other_profile,
