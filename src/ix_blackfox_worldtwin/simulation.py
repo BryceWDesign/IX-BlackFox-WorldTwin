@@ -314,13 +314,9 @@ def run_deterministic_simulation(
     ensure_scenario_manifest_replayable(scenario)
     normalized_rules = _normalize_simulation_rules(rules)
     values = dict(scenario.initial_state.to_dimension_map())
-    units = {
-        dimension.name: dimension.unit
-        for dimension in scenario.initial_state.dimensions
-    }
+    units = {dimension.name: dimension.unit for dimension in scenario.initial_state.dimensions}
     descriptions = {
-        dimension.name: dimension.description
-        for dimension in scenario.initial_state.dimensions
+        dimension.name: dimension.description for dimension in scenario.initial_state.dimensions
     }
 
     for rule in normalized_rules:
