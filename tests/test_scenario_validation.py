@@ -279,7 +279,8 @@ def test_validation_rejects_unbounded_controlled_variable() -> None:
 
 
 def test_validation_warns_for_unbounded_disturbance_and_no_evidence() -> None:
-    variables = _valid_variables() + (
+    variables = (
+        *_valid_variables(),
         worldtwin.ScenarioVariable(
             name="ambient_disturbance",
             kind=worldtwin.ScenarioVariableKind.DISTURBANCE,
