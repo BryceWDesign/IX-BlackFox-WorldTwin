@@ -42,33 +42,63 @@ def _simulation() -> worldtwin.SimulationResult:
     )
 
 
-def _confidence(confidence: float = 0.80) -> worldtwin.ConfidenceAssessment:
+def _prediction(
+    *,
+    confidence_value: float = 0.80,
+    policy_evaluation: worldtwin.PolicyEvaluation | None = None,
+) -> worldtwin.PredictionResult:
     simulation = _simulation()
-    return worldtwin.create_confidence_assessment(
+    confidence = worldtwin.create_confidence_assessment(
         target_id=simulation.simulation_id,
-        confidence=confidence,
+        confidence=confidence_value,
         rationale="Simulation is deterministic and scenario-bounded.",
         created_at=_created_at(),
         assessor="worldtwin-confidence-gate",
     )
-
-
-def _prediction(confidence: float = 0.80) -> worldtwin.PredictionResult:
     return worldtwin.create_prediction_result(
-        simulation=_simulation(),
+        simulation=simulation,
         created_at=_created_at(),
         created_by="worldtwin-prediction-gate",
-        confidence_assessment=_confidence(confidence=confidence),
+        confidence_assessment=confidence,
+        policy_evaluation=policy_evaluation,
     )
 
 
-def test_prediction_receipt_records_prediction_and_final_state_artifacts() -> None:
+def _policy_deny() -> worldtwin.PolicyEvaluation:
+    scenario = worldtwin.build_thermal_drift_scenario()
+    assumption = worldtwin.create_assumption_record(
+        name="Missing telemetry authentication",
+        category=worldtwin.AssumptionCategory.DATA_QUALITY,
+        statement="Telemetry identity has not been authenticated.",
+        confidence=0.80,
+        impact_if_wrong=worldtwin.AssumptionImpactLevel.CRITICAL,
+        status=worldtwin.AssumptionStatus.ACTIVE,
+        created_at=_created_at(),
+        owner="worldtwin-test-suite",
+        required_evidence=(worldtwin.RequiredEvidence("telemetry authentication receipt"),),
+    )
+    ledger = worldtwin.create_assumption_ledger(
+        assumptions=(assumption,),
+        created_at=_created_at(),
+        owner="worldtwin-test-suite",
+        scenario_id=scenario.scenario_id,
+    )
+
+    return worldtwin.evaluate_worldtwin_policy(
+        scenario=scenario,
+        created_at=_created_at(),
+        evaluator="worldtwin-policy-gate",
+        assumption_ledger=ledger,
+    )
+
+
+def test_prediction_receipt_records_accepted_prediction_without_execution_authority() -> None:
     prediction = _prediction()
     receipt = worldtwin.create_prediction_receipt(
         prediction=prediction,
         created_at=_created_at(),
         created_by="worldtwin-receipt-gate",
-        notes=("receipt before handoff",),
+        notes=("manual review packet",),
     )
 
     assert receipt.receipt_id.startswith("prediction-receipt-")
@@ -76,22 +106,20 @@ def test_prediction_receipt_records_prediction_and_final_state_artifacts() -> No
     assert receipt.prediction_id == prediction.prediction_id
     assert receipt.scenario_id == prediction.scenario_id
     assert receipt.simulation_id == prediction.simulation_id
-    assert receipt.created_at == _created_at()
-    assert receipt.created_by == "worldtwin-receipt-gate"
     assert receipt.review_decision is worldtwin.ReceiptReviewDecision.RECORD_ONLY
-    assert receipt.prediction_disposition is worldtwin.PredictionDisposition.ACCEPT
-    assert receipt.final_state_id == prediction.final_state.state_id
-    assert receipt.final_state_fingerprint == prediction.final_state.fingerprint()
-    assert receipt.finding_codes == prediction.finding_codes()
-    assert receipt.notes == ("receipt before handoff",)
-    assert receipt.artifact_table()[prediction.prediction_id] == prediction.fingerprint()
-    assert receipt.artifact_table()[prediction.final_state.state_id] == (
-        prediction.final_state.fingerprint()
+    assert receipt.requires_human_authority is True
+    assert receipt.allowed_for_automatic_execution is False
+    assert receipt.ready_for_human_review is True
+    assert receipt.blocks_execution_review is False
+    assert receipt.artifact_ids() == (
+        prediction.final_state.state_id,
+        prediction.prediction_id,
     )
+    assert receipt.notes == ("manual review packet",)
 
 
 def test_prediction_receipt_requires_human_review_for_low_confidence_prediction() -> None:
-    prediction = _prediction(confidence=0.30)
+    prediction = _prediction(confidence_value=0.30)
     receipt = worldtwin.create_prediction_receipt(
         prediction=prediction,
         created_at=_created_at(),
@@ -100,104 +128,48 @@ def test_prediction_receipt_requires_human_review_for_low_confidence_prediction(
 
     assert prediction.disposition is worldtwin.PredictionDisposition.REVIEW
     assert receipt.review_decision is worldtwin.ReceiptReviewDecision.HUMAN_REVIEW_REQUIRED
-    assert receipt.requires_human_review is True
+    assert receipt.ready_for_human_review is True
     assert receipt.blocks_execution_review is False
 
 
-def test_prediction_receipt_blocks_denied_or_quarantined_prediction() -> None:
-    simulation = _simulation()
-    factor = worldtwin.create_risk_factor(
-        target="risk_score",
-        observed_value=0.95,
-        weight=1.0,
-        rationale="Manual high risk factor.",
-    )
-    profile = worldtwin.RiskProfile(
-        profile_id="risk-profile-manual",
-        scenario_id=simulation.scenario_id,
-        branch_id="branch-manual",
-        simulation_id=simulation.simulation_id,
-        aggregate_score=0.95,
-        severity=worldtwin.RiskSeverity.CRITICAL,
-        recommendation=worldtwin.RiskRecommendation.QUARANTINE,
-        factors=(factor,),
-        created_at=_created_at(),
-        created_by="worldtwin-risk-gate",
-    )
-    prediction = worldtwin.create_prediction_result(
-        simulation=simulation,
-        created_at=_created_at(),
-        created_by="worldtwin-prediction-gate",
-        confidence_assessment=_confidence(),
-        risk_profile=profile,
-    )
+def test_prediction_receipt_blocks_denied_prediction() -> None:
+    policy = _policy_deny()
+    prediction = _prediction(policy_evaluation=policy)
     receipt = worldtwin.create_prediction_receipt(
         prediction=prediction,
         created_at=_created_at(),
         created_by="worldtwin-receipt-gate",
     )
 
-    assert prediction.disposition is worldtwin.PredictionDisposition.QUARANTINE
-    assert receipt.review_decision is worldtwin.ReceiptReviewDecision.EXECUTION_REVIEW_BLOCKED
-    assert receipt.requires_human_review is True
+    assert prediction.disposition is worldtwin.PredictionDisposition.DENY
+    assert receipt.review_decision is worldtwin.ReceiptReviewDecision.BLOCKED
     assert receipt.blocks_execution_review is True
+    assert receipt.ready_for_human_review is False
 
 
-def test_prediction_receipt_attaches_reproducibility_manifest_artifact() -> None:
-    scenario = worldtwin.build_thermal_drift_scenario()
-    simulation = _simulation()
-    manifest = worldtwin.create_reproducibility_manifest(
-        scenario=scenario,
-        simulation=simulation,
-        created_at=_created_at(),
-        created_by="worldtwin-replay-gate",
+def test_prediction_receipt_includes_core_artifacts_and_optional_context() -> None:
+    prediction = _prediction()
+    extra_artifact = worldtwin.ReceiptArtifact(
+        artifact_id="policy-alpha",
+        artifact_type="policy-evaluation",
+        fingerprint="fingerprint-policy-alpha",
+        source="policy",
     )
-    prediction = worldtwin.create_prediction_result(
-        simulation=simulation,
-        created_at=_created_at(),
-        created_by="worldtwin-prediction-gate",
-        confidence_assessment=_confidence(),
-        reproducibility_manifest=manifest,
-    )
-
     receipt = worldtwin.create_prediction_receipt(
         prediction=prediction,
         created_at=_created_at(),
         created_by="worldtwin-receipt-gate",
-        reproducibility_manifest=manifest,
+        artifacts=(extra_artifact,),
     )
 
-    assert receipt.artifact_table()[manifest.manifest_id] == manifest.fingerprint()
+    artifact_types = tuple(artifact.artifact_type for artifact in receipt.artifacts)
 
-
-def test_prediction_receipt_rejects_mismatched_reproducibility_manifest() -> None:
-    prediction = _prediction()
-    manifest = worldtwin.ReproducibilityManifest(
-        manifest_id="reproducibility-manifest-other",
-        scenario_id=prediction.scenario_id,
-        created_at=_created_at(),
-        created_by="worldtwin-replay-gate",
-        artifacts=(
-            worldtwin.ReproducibilityArtifact(
-                artifact_id="artifact-a",
-                artifact_type="manual",
-                fingerprint="fingerprint-a",
-                source="test",
-            ),
-        ),
-        replay_command="python -m ix_blackfox_worldtwin.cli run-demo",
+    assert artifact_types == (
+        "policy-evaluation",
+        "prediction-final-state",
+        "prediction-result",
     )
-
-    with pytest.raises(
-        ValueError,
-        match="reproducibility manifest id must match prediction reproducibility_manifest_id",
-    ):
-        worldtwin.create_prediction_receipt(
-            prediction=prediction,
-            created_at=_created_at(),
-            created_by="worldtwin-receipt-gate",
-            reproducibility_manifest=manifest,
-        )
+    assert receipt.artifact_table()["policy-alpha"] == "fingerprint-policy-alpha"
 
 
 def test_prediction_receipt_fingerprint_is_replay_stable() -> None:
@@ -219,39 +191,71 @@ def test_prediction_receipt_fingerprint_is_replay_stable() -> None:
     assert first.fingerprint() == second.fingerprint()
 
 
-def test_prediction_receipt_rejects_duplicate_additional_artifact() -> None:
-    prediction = _prediction()
-    duplicate = worldtwin.ReceiptArtifact(
-        artifact_id=prediction.prediction_id,
-        artifact_type="duplicate",
-        fingerprint="duplicate-fingerprint",
+def test_prediction_receipt_rejects_duplicate_artifacts() -> None:
+    artifact = worldtwin.ReceiptArtifact(
+        artifact_id="artifact-alpha",
+        artifact_type="manual",
+        fingerprint="fingerprint-alpha",
         source="test",
     )
 
-    with pytest.raises(ValueError, match=f"duplicate receipt artifact id: {prediction.prediction_id}"):
+    with pytest.raises(ValueError, match="duplicate receipt artifact id: artifact-alpha"):
         worldtwin.create_prediction_receipt(
-            prediction=prediction,
+            prediction=_prediction(),
             created_at=_created_at(),
             created_by="worldtwin-receipt-gate",
-            additional_artifacts=(duplicate,),
+            artifacts=(artifact, artifact),
         )
 
 
-def test_prediction_receipt_rejects_empty_artifacts_when_constructed_directly() -> None:
+def test_prediction_receipt_rejects_automatic_execution_when_constructed_directly() -> None:
     prediction = _prediction()
+    artifact = worldtwin.ReceiptArtifact(
+        artifact_id=prediction.prediction_id,
+        artifact_type="prediction-result",
+        fingerprint=prediction.fingerprint(),
+        source="prediction",
+    )
 
-    with pytest.raises(ValueError, match="prediction receipt requires at least one artifact"):
+    with pytest.raises(
+        ValueError,
+        match="prediction receipt must never allow automatic execution",
+    ):
         worldtwin.PredictionReceipt(
             receipt_id="prediction-receipt-manual",
             prediction_id=prediction.prediction_id,
             scenario_id=prediction.scenario_id,
             simulation_id=prediction.simulation_id,
+            prediction_disposition=prediction.disposition,
+            review_decision=worldtwin.ReceiptReviewDecision.RECORD_ONLY,
             created_at=_created_at(),
             created_by="worldtwin-receipt-gate",
-            review_decision=worldtwin.ReceiptReviewDecision.RECORD_ONLY,
+            artifacts=(artifact,),
+            allowed_for_automatic_execution=True,
+        )
+
+
+def test_prediction_receipt_rejects_decision_mismatch_when_constructed_directly() -> None:
+    prediction = _prediction(policy_evaluation=_policy_deny())
+    artifact = worldtwin.ReceiptArtifact(
+        artifact_id=prediction.prediction_id,
+        artifact_type="prediction-result",
+        fingerprint=prediction.fingerprint(),
+        source="prediction",
+    )
+
+    with pytest.raises(
+        ValueError,
+        match="receipt review decision must match prediction disposition",
+    ):
+        worldtwin.PredictionReceipt(
+            receipt_id="prediction-receipt-manual",
+            prediction_id=prediction.prediction_id,
+            scenario_id=prediction.scenario_id,
+            simulation_id=prediction.simulation_id,
             prediction_disposition=prediction.disposition,
-            final_state_id=prediction.final_state.state_id,
-            final_state_fingerprint=prediction.final_state.fingerprint(),
-            artifacts=(),
-            finding_codes=prediction.finding_codes(),
+            review_decision=worldtwin.ReceiptReviewDecision.RECORD_ONLY,
+            created_at=_created_at(),
+            created_by="worldtwin-receipt-gate",
+            artifacts=(artifact,),
         )
