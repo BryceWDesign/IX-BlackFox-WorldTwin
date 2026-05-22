@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import json
 
+import pytest
+
 import ix_blackfox_worldtwin as worldtwin
 from ix_blackfox_worldtwin import cli
 
@@ -48,10 +50,11 @@ def test_wave1_acceptance_handoff_payload_preserves_full_evidence_chain() -> Non
     bundle = cli.build_demo_review_bundle()
     handoff_payload = bundle.handoff_payload()
 
-    artifact_types = {
-        artifact["artifact_type"] for artifact in handoff_payload["artifacts"]
-    }
-    reason_codes = set(handoff_payload["reasons"][index]["code"] for index in range(len(handoff_payload["reasons"])))
+    artifact_types = {artifact["artifact_type"] for artifact in handoff_payload["artifacts"]}
+    reason_codes = set(
+        handoff_payload["reasons"][index]["code"]
+        for index in range(len(handoff_payload["reasons"]))
+    )
 
     assert artifact_types == {
         "adaptation-gate-result",
@@ -112,7 +115,9 @@ def test_wave1_acceptance_public_api_exposes_core_contracts() -> None:
     assert missing_exports == []
 
 
-def test_wave1_acceptance_cli_demo_matches_programmatic_bundle(capsys) -> None:
+def test_wave1_acceptance_cli_demo_matches_programmatic_bundle(
+    capsys: pytest.CaptureFixture[str],
+) -> None:
     programmatic_bundle = cli.build_demo_review_bundle()
 
     exit_code = cli.main(["run-demo"])
@@ -133,12 +138,18 @@ def test_wave1_acceptance_claim_boundary_posture_is_conservative() -> None:
     assert worldtwin.get_external_description_issues(worldtwin.GITHUB_DESCRIPTION) == ()
     assert worldtwin.is_prohibited_claim("IX-BlackFox-WorldTwin is certified AGI.") is True
     assert worldtwin.is_prohibited_claim("IX-BlackFox-WorldTwin is production approved.") is True
-    assert worldtwin.is_claim_language_allowed(
-        "WorldTwin packages scenario evidence for human review before execution."
-    ) is True
-    assert worldtwin.is_claim_language_allowed(
-        "WorldTwin is certified autonomous AGI for operational deployment."
-    ) is False
+    assert (
+        worldtwin.is_claim_language_allowed(
+            "WorldTwin packages scenario evidence for human review before execution."
+        )
+        is True
+    )
+    assert (
+        worldtwin.is_claim_language_allowed(
+            "WorldTwin is certified autonomous AGI for operational deployment."
+        )
+        is False
+    )
 
 
 def test_wave1_acceptance_no_automatic_authority_appears_in_exported_bundle() -> None:
