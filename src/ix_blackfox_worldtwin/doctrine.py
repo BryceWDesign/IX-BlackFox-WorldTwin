@@ -110,7 +110,7 @@ CLAIM_BOUNDARY_RULES: tuple[ClaimBoundaryRule, ...] = (
         rule_id="no-autonomous-authority",
         phrase="autonomous authority",
         reason=(
-            "The project produces reviewable evidence and must not imply authority to act " "alone."
+            "The project produces reviewable evidence and must not imply authority to act alone."
         ),
         safer_language="human-reviewable execution evidence",
     ),
@@ -124,7 +124,7 @@ CLAIM_BOUNDARY_RULES: tuple[ClaimBoundaryRule, ...] = (
         rule_id="no-defense-affiliation",
         phrase="defense-approved",
         reason=(
-            "The project is not endorsed, approved, funded, or certified by defense " "authorities."
+            "The project is not endorsed, approved, funded, or certified by defense authorities."
         ),
         safer_language="defense-relevant research prototype",
     ),
