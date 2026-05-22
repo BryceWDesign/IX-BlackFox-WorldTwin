@@ -28,6 +28,7 @@ class ReceiptReviewDecision(StrEnum):
     RECORD_ONLY = "record-only"
     HUMAN_REVIEW_REQUIRED = "human-review-required"
     EXECUTION_REVIEW_BLOCKED = "execution-review-blocked"
+    BLOCKED = "execution-review-blocked"
 
 
 @dataclass(frozen=True, slots=True)
@@ -78,16 +79,25 @@ class PredictionReceipt:
     created_by: str
     review_decision: ReceiptReviewDecision
     prediction_disposition: PredictionDisposition
-    final_state_id: str
-    final_state_fingerprint: str
-    artifacts: tuple[ReceiptArtifact, ...]
-    finding_codes: tuple[str, ...]
+    final_state_id: str = ""
+    final_state_fingerprint: str = ""
+    artifacts: tuple[ReceiptArtifact, ...] = ()
+    finding_codes: tuple[str, ...] = ()
+    requires_human_authority: bool = True
+    allowed_for_automatic_execution: bool = False
     notes: tuple[str, ...] = ()
     schema_version: str = RECEIPT_SCHEMA_VERSION
 
     def __post_init__(self) -> None:
         """Validate and normalize a prediction receipt."""
 
+        if not self.requires_human_authority:
+            raise ValueError("prediction receipt must require human authority")
+        if self.allowed_for_automatic_execution:
+            raise ValueError("prediction receipt must never allow automatic execution")
+        expected_decision = _derive_receipt_review_decision(self.prediction_disposition)
+        if self.review_decision is not expected_decision:
+            raise ValueError("receipt review decision must match prediction disposition")
         if not self.artifacts:
             raise ValueError("prediction receipt requires at least one artifact")
 
@@ -147,6 +157,17 @@ class PredictionReceipt:
             ReceiptReviewDecision.EXECUTION_REVIEW_BLOCKED,
         }
 
+    @property
+    def ready_for_human_review(self) -> bool:
+        """Return True when the receipt may enter human review or record-only archival."""
+
+        return not self.blocks_execution_review
+
+    def artifact_ids(self) -> tuple[str, ...]:
+        """Return artifact ids in deterministic order."""
+
+        return tuple(artifact.artifact_id for artifact in self.artifacts)
+
     def artifact_table(self) -> dict[str, str]:
         """Return artifact ids mapped to their fingerprints."""
 
@@ -163,9 +184,11 @@ class PredictionReceipt:
             "final_state_id": self.final_state_id,
             "finding_codes": list(self.finding_codes),
             "notes": list(self.notes),
+            "allowed_for_automatic_execution": self.allowed_for_automatic_execution,
             "prediction_disposition": self.prediction_disposition.value,
             "prediction_id": self.prediction_id,
             "receipt_id": self.receipt_id,
+            "requires_human_authority": self.requires_human_authority,
             "review_decision": self.review_decision.value,
             "scenario_id": self.scenario_id,
             "schema_version": self.schema_version,
@@ -185,6 +208,7 @@ def create_prediction_receipt(
     created_by: str,
     reproducibility_manifest: ReproducibilityManifest | None = None,
     additional_artifacts: tuple[ReceiptArtifact, ...] = (),
+    artifacts: tuple[ReceiptArtifact, ...] = (),
     notes: tuple[str, ...] = (),
     receipt_id: str | None = None,
 ) -> PredictionReceipt:
@@ -194,7 +218,7 @@ def create_prediction_receipt(
     normalized_created_by = _require_non_empty(created_by, "created by")
     normalized_notes = _normalize_unique_text_tuple(notes, "receipt note")
 
-    artifacts = [
+    receipt_artifacts = [
         ReceiptArtifact(
             artifact_id=prediction.prediction_id,
             artifact_type="prediction-result",
@@ -203,7 +227,7 @@ def create_prediction_receipt(
         ),
         ReceiptArtifact(
             artifact_id=prediction.final_state.state_id,
-            artifact_type="final-state",
+            artifact_type="prediction-final-state",
             fingerprint=prediction.final_state.fingerprint(),
             source="state",
         ),
@@ -214,7 +238,7 @@ def create_prediction_receipt(
             raise ValueError(
                 "reproducibility manifest id must match prediction reproducibility_manifest_id"
             )
-        artifacts.append(
+        receipt_artifacts.append(
             ReceiptArtifact(
                 artifact_id=reproducibility_manifest.manifest_id,
                 artifact_type="reproducibility-manifest",
@@ -223,8 +247,9 @@ def create_prediction_receipt(
             )
         )
 
-    artifacts.extend(additional_artifacts)
-    normalized_artifacts = _normalize_receipt_artifacts(tuple(artifacts))
+    receipt_artifacts.extend(additional_artifacts)
+    receipt_artifacts.extend(artifacts)
+    normalized_artifacts = _normalize_receipt_artifacts(tuple(receipt_artifacts))
     review_decision = _derive_receipt_review_decision(prediction.disposition)
     finding_codes = prediction.finding_codes()
     resolved_receipt_id = receipt_id or make_prediction_receipt_id(
@@ -328,7 +353,9 @@ def _normalize_receipt_artifacts(
         seen_artifact_ids.add(artifact.artifact_id)
         normalized_artifacts.append(artifact)
 
-    return tuple(sorted(normalized_artifacts, key=lambda item: item.artifact_id))
+    return tuple(
+        sorted(normalized_artifacts, key=lambda item: (item.artifact_type, item.artifact_id))
+    )
 
 
 def _normalize_unique_text_tuple(values: tuple[str, ...], field_name: str) -> tuple[str, ...]:
