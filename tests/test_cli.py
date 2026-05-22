@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import json
 
+import pytest
+
 import ix_blackfox_worldtwin as worldtwin
 from ix_blackfox_worldtwin import cli
 
@@ -23,7 +25,7 @@ def test_build_demo_review_bundle_returns_valid_human_review_bundle() -> None:
     assert "adaptation-ready-for-human-review" in bundle.reason_codes
 
 
-def test_cli_run_demo_emits_canonical_json(capsys) -> None:
+def test_cli_run_demo_emits_canonical_json(capsys: pytest.CaptureFixture[str]) -> None:
     exit_code = cli.main(["run-demo"])
     captured = capsys.readouterr()
     payload = json.loads(captured.out)
@@ -41,7 +43,7 @@ def test_cli_run_demo_emits_canonical_json(capsys) -> None:
     assert payload["artifact_ids"] == sorted(payload["artifact_ids"])
 
 
-def test_cli_run_demo_pretty_prints_valid_json(capsys) -> None:
+def test_cli_run_demo_pretty_prints_valid_json(capsys: pytest.CaptureFixture[str]) -> None:
     exit_code = cli.main(["run-demo", "--pretty"])
     captured = capsys.readouterr()
     payload = json.loads(captured.out)
